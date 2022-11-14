@@ -1,0 +1,63 @@
+<nav class="sidebar" [ngClass]="isOpen ? '' : 'close'">
+    <header>
+        <div class="image-text">
+            <a routerLink="/profile" class="image">
+                <i class='bx bx-image bx-tada-hover icon'></i>
+            </a>
+
+            <div class="text logo-text">
+                <span class="name">Gallery</span>
+                <span class="subname">Viewer</span>
+            </div>
+        </div>
+        <i class='bx toggle' [ngClass]="isOpen ? 'bx-chevron-right' : 'bx-chevron-left'" (click)="switchOpen()"></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a routerLink="/profile" [ngClass]="activeMenu === 'profile' ? 'active' : ''">
+                        <i class='bx icon bxs-user bx-tada-hover'></i>
+                        <span class="text nav-text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a routerLink="/mygalleries" [ngClass]="activeMenu === 'mygalleries' ? 'active' : ''">
+                        <i class='bx icon bx-images bx-tada-hover'></i>
+                        <span class="text nav-text">My Galleries</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a routerLink="/favorites" [ngClass]="activeMenu === 'favorites' ? 'active' : ''">
+                        <i class='bx icon bx-star bx-tada-hover'></i>
+                        <span class="text nav-text">Favorites</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a routerLink="/browse" [ngClass]="activeMenu === 'browse' ? 'active' : ''">
+                        <i class='bx icon bx-search-alt bx-tada-hover'></i>
+                        <span class="text nav-text">Browse</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="bottom-content">
+            <ul>
+                <li class="nav-link">
+                    <a routerLink="/login" (click)="logout()">
+                        <i class='bx bx-log-out bx-tada-hover icon'></i>
+                        <span class="text nav-text">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

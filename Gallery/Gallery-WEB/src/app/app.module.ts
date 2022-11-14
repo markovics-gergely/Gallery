@@ -14,6 +14,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoadingComponent } from './components/loading/loading.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { MyGalleriesComponent } from './components/my-galleries/my-galleries.component';
+import { FavoritesComponent } from './components/favorites/favorites.component';
+import { BrowseComponent } from './components/browse/browse.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { ProfileComponent } from './components/profile/profile.component';
     LoginComponent,
     RegisterComponent,
     LoadingComponent,
-    ProfileComponent
+    ProfileComponent,
+    SidebarComponent,
+    MyGalleriesComponent,
+    FavoritesComponent,
+    BrowseComponent
   ],
   imports: [
     BrowserModule,

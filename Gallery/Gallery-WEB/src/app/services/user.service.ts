@@ -41,7 +41,7 @@ export class UserService {
     body.set('client_id', environment.client_id);
     body.set('client_secret', environment.client_secret);
 
-    return this.client.post(`${this.baseUrl}/login`, body.toString(), { headers: headers })
+    return this.client.post(`${environment.baseUrl}/connect/token`, body.toString(), { headers: headers })
   }
 
   /**
