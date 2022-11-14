@@ -15,6 +15,10 @@ namespace Gallery.DAL.Domain
         public virtual ICollection<IdentityUserToken<Guid>> Tokens { get; set; } = new List<IdentityUserToken<Guid>>();
         public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = new List<IdentityUserRole<Guid>>();
 
+        public IList<Album> CreatedAlbums { get; set; } = new List<Album>();
+
+        public IList<Album> LikedAlbums { get; set; } = new List<Album>();
+
         public string GetFullName()
         {
             return $"{FirstName} {LastName}";
