@@ -5,6 +5,10 @@ using Gallery.BLL.Infrastructure;
 using Gallery.BLL.Infrastructure.Queries;
 using Gallery.BLL.Infrastructure.ViewModels;
 using MediatR;
+using Gallery.DAL.Repository.Implementations;
+using Gallery.DAL.Repository.Interfaces;
+using Gallery.DAL.UnitOfWork.Interfaces;
+using Gallery.DAL.UnitOfWork.Implementations;
 
 namespace Gallery.API.Extensions
 {
@@ -30,6 +34,9 @@ namespace Gallery.API.Extensions
             services.AddTransient<IRequestHandler<GetProfileQuery, ProfileViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetFullProfileQuery, ProfileWithNameViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
+
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }
 }

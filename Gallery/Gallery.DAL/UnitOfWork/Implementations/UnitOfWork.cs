@@ -13,40 +13,25 @@ namespace Gallery.DAL.UnitOfWork.Implementations
     public class UnitOfWork : IUnitOfWork
     {
         private readonly GalleryDbContext context;
-        private IGenericRepository<ApplicationUser>? userRepository;
-        private IGenericRepository<Album>? albumRepository;
-        private IGenericRepository<Picture>? pictureRepository;
+        private readonly IGenericRepository<ApplicationUser> userRepository;
+        private readonly IGenericRepository<Album> albumRepository;
+        private readonly IGenericRepository<Picture> pictureRepository;
 
-        public IGenericRepository<ApplicationUser> UserRepository
-        {
-            get
-            {
-                userRepository ??= new GenericRepository<ApplicationUser>(context);
-                return userRepository;
-            }
-        }
+        public IGenericRepository<ApplicationUser> UserRepository => userRepository;
 
-        public IGenericRepository<Album> AlbumRepository
-        {
-            get
-            {
-                albumRepository ??= new GenericRepository<Album>(context);
-                return albumRepository;
-            }
-        }
+        public IGenericRepository<Album> AlbumRepository => albumRepository;
 
-        public IGenericRepository<Picture> PictureRepository
-        {
-            get
-            {
-                pictureRepository ??= new GenericRepository<Picture>(context);
-                return pictureRepository;
-            }
-        }
+        public IGenericRepository<Picture> PictureRepository => pictureRepository;
 
-        public UnitOfWork(GalleryDbContext context)
+        public UnitOfWork(GalleryDbContext context, 
+            IGenericRepository<ApplicationUser> userRepository,
+            IGenericRepository<Album> albumRepository,
+            IGenericRepository<Picture> pictureRepository)
         {
             this.context = context;
+            this.userRepository = userRepository;
+            this.albumRepository = albumRepository;
+            this.pictureRepository = pictureRepository;
         }
 
         public async Task Save()
