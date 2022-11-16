@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { RegisterUserDTO, LoginUserDTO } from 'models';
+import { RegisterUserDTO, LoginUserDTO, ProfileViewModel, FullProfileViewModel } from 'models';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -76,5 +76,21 @@ export class UserService {
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('accessToken');
     return token !== null && !this.jwtHelper.isTokenExpired(token);
+  }
+
+  /**
+   * Get profile data of the user for the profile page
+   * @returns Profile data of the user logged in
+   */
+  public getProfile(): Observable<ProfileViewModel> {
+    return this.client.get<ProfileViewModel>(`${this.baseUrl}/profile`);
+  }
+
+  /**
+   * Get detailed profile data of the user for the profile editor modal
+   * @returns Detailed profile data of the user logged in
+   */
+  public getFullProfile(): Observable<FullProfileViewModel> {
+    return this.client.get<FullProfileViewModel>(`${this.baseUrl}/full-profile`);
   }
 }

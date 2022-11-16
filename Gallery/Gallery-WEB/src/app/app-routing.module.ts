@@ -31,6 +31,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'mygalleries/:id',
+    component: MyGalleriesComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'favorites',
     component: FavoritesComponent,
     canActivate: [AuthGuard]

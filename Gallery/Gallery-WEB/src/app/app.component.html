@@ -1,7 +1,9 @@
-<body>
+<body style="width: 100%; height: 100%;">
   <div style="display: flex; height: 100%;">
     <app-sidebar *ngIf="showSidebar()"></app-sidebar>
-    <router-outlet></router-outlet>
+    <div style="width: 100%; height: 100%;" [ngClass]="isSidebarOpen ? 'sideOpen' : ''">
+      <router-outlet></router-outlet>
+    </div>
     <app-loading></app-loading>
   </div>
 </body>

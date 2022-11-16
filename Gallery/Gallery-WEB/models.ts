@@ -27,3 +27,28 @@ export interface RegisterUserDTO {
     password: string;
     confirmedPassword: string;
 }
+
+export interface ProfileViewModel {
+    userName: string;
+    name: string;
+    email: string;
+}
+
+export interface FullProfileViewModel {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+export interface PictureViewModel {
+    path: string;
+    fileExtension: string;
+}
+
+export interface ProfileAlbumViewModel {
+    id: string;
+    name: string;
+    countOfPictures: number;
+    coverPicture: PictureViewModel;
+}

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SidebarService } from './services/sidebar.service';
 import { UserService } from './services/user.service';
 
 @Component({
@@ -10,7 +11,8 @@ export class AppComponent {
   title = 'Gallery Viewer';
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private sidebarService: SidebarService
   ) {}
 
   /**
@@ -20,4 +22,9 @@ export class AppComponent {
   showSidebar(): boolean {
     return this.userService.isAuthenticated();
   }
+
+  /**
+   * Getter for sidebar status
+   */
+  get isSidebarOpen() { return this.sidebarService.isOpen; }
 }

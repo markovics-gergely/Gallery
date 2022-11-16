@@ -8,12 +8,15 @@
 }
 
 .sidebar {
-    height: 100%;
     width: 220px;
     padding: 10px 14px;
     background: var(--secondary-color);
     transition: all 0.3s ease;
-
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    
     &.close {
         width: 86px;
         .text { opacity: 0; }

@@ -1,0 +1,72 @@
+.album-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-flow: row wrap;
+  margin: 10px;
+}
+
+.album {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  height: 150px;
+  width: 150px;
+  border-radius: 10px;
+  margin: 10px;
+  background-color: var(--secondary-color);
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  cursor: pointer;
+
+  .image-container {
+    width: 150px;
+    height: 120px;
+    position: relative;
+  
+    .img-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      object-fit: fill;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px 10px 0 0;
+      filter: blur(2px);
+    }
+
+    img {
+      position: relative;
+      z-index: 2;
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .mat-badge-content {
+      background: var(--primary-color);
+      right: 5px;
+      top: 5px;
+      z-index: 3;
+    }
+  }
+
+  .album-name {
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    width: calc(100% - 20px);
+    color: var(--text-color);
+    opacity: 0.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 30px;
+    line-height: 30px;
+  }
+}

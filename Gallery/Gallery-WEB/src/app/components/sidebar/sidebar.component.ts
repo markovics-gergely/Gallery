@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { SidebarService } from 'src/app/services/sidebar.service';
 import { TokenService } from 'src/app/services/token.service';
 
 @Component({
@@ -12,7 +13,8 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private sidebarService: SidebarService
   ) { }
 
   ngOnInit(): void {
@@ -21,20 +23,20 @@ export class SidebarComponent implements OnInit {
   /**
    * Getter for open status
    */
-  get isOpen() { return this._isOpen; }
+  get isOpen() { return this.sidebarService.isOpen; }
 
   /**
    * Switch open status
    */
   switchOpen(): void {
-    this._isOpen = !this._isOpen;
+    this.sidebarService.switchOpen();
   }
 
   /**
    * Get current active route
    */
   get activeMenu() {
-    return this.router.url.slice(1);
+    return this.router.url.slice(1).split('/')[0];
   }
 
   /**

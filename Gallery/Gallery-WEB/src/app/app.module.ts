@@ -18,6 +18,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { MyGalleriesComponent } from './components/my-galleries/my-galleries.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
 import { BrowseComponent } from './components/browse/browse.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { BrowseComponent } from './components/browse/browse.component';
     FormsModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
+    NgbModule,
+    MatBadgeModule,
     JwtModule.forRoot({
       config: { },
     })
