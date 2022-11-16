@@ -6,6 +6,7 @@ using Gallery.BLL.Infrastructure.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gallery.API.Controllers
 {
@@ -27,6 +28,14 @@ namespace Gallery.API.Controllers
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPost("test/file")]
+        [Consumes("multipart/form-data")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Asd(List<IFormFile> files)
+        {
+            return Ok();
         }
 
         /// <summary>
