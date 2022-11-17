@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
-    internal class DeletePictureDTO
+    public class DeletePictureDTO
     {
+        public Guid PictureId { get; set; }
     }
 }

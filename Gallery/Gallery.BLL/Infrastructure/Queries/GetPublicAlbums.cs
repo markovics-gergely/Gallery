@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Queries
 {
-    internal class GetPublicAlbums
+    public class GetPublicAlbums
     {
+        public int PageCount { get; set; }
+
+        public int PageSize { get; set; }
     }
 }

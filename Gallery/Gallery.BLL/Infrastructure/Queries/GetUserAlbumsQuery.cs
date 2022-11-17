@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Queries
 {
-    internal class GetUserAlbumsQuery
+    public class GetUserAlbumsQuery
     {
+        public Guid UserId { get; set; }
+
+        public int PageCount { get; set; }
+
+        public int PageSize { get; set; }
     }
 }

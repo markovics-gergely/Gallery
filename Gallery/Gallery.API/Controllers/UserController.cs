@@ -30,14 +30,6 @@ namespace Gallery.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("test/file")]
-        [Consumes("multipart/form-data")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Asd(List<IFormFile> files)
-        {
-            return Ok();
-        }
-
         /// <summary>
         /// Get a user by id
         /// </summary>

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gallery.BLL.Infrastructure.Queries
+namespace Gallery.BLL.Utils
 {
-    public class GetAlbumDetails
+    internal class FileHelpers
     {
-        public Guid AlbumId { get; set; }
     }
 }

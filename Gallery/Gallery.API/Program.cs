@@ -25,6 +25,7 @@ builder.Services.AddIdentityExtensions(configuration);
 builder.Services.AddAuthenticationExtensions(configuration);
 
 builder.Services.AddServiceExtensions();
+builder.Services.AddConfigurations(configuration);
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
@@ -63,6 +64,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.Use(async (context, next) => await AuthenticationExtension.AuthQueryStringToHeader(context, next));
