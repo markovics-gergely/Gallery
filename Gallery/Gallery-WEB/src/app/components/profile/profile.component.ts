@@ -27,10 +27,7 @@ export class ProfileComponent implements OnInit {
         id: "JusticeForHarambe",
         name: "Rest in peace",
         countOfPictures: 10,
-        coverPicture: {
-          path: 'https://www.gannett-cdn.com/-mm-/e922242eb72f53e3faf34889034c1a6ca9b2fe46/c=115-0-2595-3307/local/-/media/2016/05/31/Cincinnati/Cincinnati/636002970226066550-Harambe.jpg',
-          fileExtension: 'png'
-        }
+        coverUrl: 'https://www.gannett-cdn.com/-mm-/e922242eb72f53e3faf34889034c1a6ca9b2fe46/c=115-0-2595-3307/local/-/media/2016/05/31/Cincinnati/Cincinnati/636002970226066550-Harambe.jpg',
       });
       this.loadingService.isLoading = false;
     });

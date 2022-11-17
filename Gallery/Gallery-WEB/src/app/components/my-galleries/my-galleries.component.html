@@ -1,1 +1,71 @@
-<p>my-galleries works! {{galleryId}}</p>
+<div class="container">
+    <div class="main-container">
+        <div class="title-line">
+            <div class="title" *ngIf="!selectedId">My Galleries</div>
+            <div class="buttons">
+                <button mat-button><i class='bx bx-image-alt bx-tada-hover'></i></button>
+                <button mat-button><i class='bx bx-plus bx-tada-hover'></i></button>
+            </div>
+            <div class="title" *ngIf="selectedId">{{selectedId}}</div>
+        </div>
+        <div *ngIf="galleries && !selectedId" class="gallery-list">
+            <div class="gallery" (click)="selectGallery(gallery.id)" *ngFor="let gallery of galleries">
+                <div class="image-container">
+                    <div *ngFor="let url of gallery.pictureUrls" class="image-sub-container">
+                        <img class="img-back" [src]="url" alt="cover">
+                        <img [src]="url" alt="cover">
+                    </div>
+                </div>
+                <div class="data-container">
+                    <div class="card-item">
+                        <div class="gallery-name">
+                            {{gallery.name}}
+                        </div>
+                    </div>
+                    <div class="card-item">
+                        <div class="footer-text">
+                            {{gallery.pictureUrls.length}} Pictures
+                        </div>
+                    </div>
+                    <div class="card-item">
+                        <div class="footer-text" *ngIf="gallery.likeCount > 1">
+                            {{gallery.likeCount}} people liked this gallery
+                        </div>
+                        <div class="footer-text" *ngIf="gallery.likeCount === 1">
+                            {{gallery.likeCount}} person liked this gallery
+                        </div>
+                        <div class="footer-text" *ngIf="gallery.likeCount === 0">
+                            Nobody liked this gallery
+                        </div>
+                    </div>
+                    <div class="card-item">
+                        <div class="footer-text" *ngIf="gallery.isPrivate">
+                            <i class="bx bx-lock-alt"></i> Private
+                        </div>
+                        <div class="footer-text" *ngIf="!gallery.isPrivate">
+                            <i class="bx bx-lock-open-alt"></i> Public
+                        </div>
+                    </div>
+                    <div class="card-item">
+                        <div class="footer-text" *ngIf="gallery.isFavorite">
+                            <i class="bx bx-star"></i> Favorited
+                        </div>
+                    </div>
+                    <div class="card-item bottom-buttons">
+                        <div class="button-list">
+                            <button mat-button><i class='bx bx-trash bx-tada-hover'></i></button>
+                            <button mat-button>
+                                <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
+                            </button>
+                            <button mat-button>
+                                <i class='bx bx-tada-hover' [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <app-pager [pageCount]="10" (pageEvent)="setPage($event)" (sizeEvent)="setPageSize($event)"></app-pager>
+        </div>
+        <app-gallery *ngIf="selectedId"></app-gallery>
+    </div>
+</div>

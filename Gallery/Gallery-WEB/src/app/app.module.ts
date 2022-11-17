@@ -20,6 +20,8 @@ import { FavoritesComponent } from './components/favorites/favorites.component';
 import { BrowseComponent } from './components/browse/browse.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatBadgeModule} from '@angular/material/badge';
+import { GalleryComponent } from './components/gallery/gallery.component';
+import { PagerComponent } from './components/pager/pager.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import {MatBadgeModule} from '@angular/material/badge';
     SidebarComponent,
     MyGalleriesComponent,
     FavoritesComponent,
-    BrowseComponent
+    BrowseComponent,
+    GalleryComponent,
+    PagerComponent
   ],
   imports: [
     BrowserModule,

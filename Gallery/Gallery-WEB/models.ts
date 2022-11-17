@@ -41,14 +41,18 @@ export interface FullProfileViewModel {
     email: string;
 }
 
-export interface PictureViewModel {
-    path: string;
-    fileExtension: string;
-}
-
 export interface ProfileAlbumViewModel {
     id: string;
     name: string;
     countOfPictures: number;
-    coverPicture: PictureViewModel;
+    coverUrl: string;
+}
+
+export interface AlbumViewModel {
+    id: string;
+    name: string;
+    isPrivate: boolean;
+    isFavorite: boolean;
+    likeCount: number;
+    pictureUrls: string[];
 }
