@@ -9,8 +9,6 @@ namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
     public class CreateAlbumDTO
     {
-        public Guid UserId { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public bool IsPrivate { get; set; }

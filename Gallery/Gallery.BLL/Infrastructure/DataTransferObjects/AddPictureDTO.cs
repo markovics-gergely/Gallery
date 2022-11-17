@@ -9,8 +9,6 @@ namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
     public class AddPictureDTO
     {
-        public Guid UserId { get; set; }
-
         public Guid AlbumId { get; set; }
 
         public IEnumerable<IFormFile> Pictures { get; set; } = Enumerable.Empty<IFormFile>();
