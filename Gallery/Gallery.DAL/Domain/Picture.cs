@@ -12,10 +12,12 @@ namespace Gallery.DAL.Domain
 
         public Album Album { get; set; } = new Album();
 
-        public string Path { get; set; } = string.Empty;
+        public string PhysicalPath { get; set; } = string.Empty;
 
-        public int Size { get; set; }
+        public string DisplayPath { get; set; } = string.Empty;
 
-        public PictureFormat FileExtension { get; set; }
+        public double Size { get; set; }
+
+        public string FileExtension { get; set; } = string.Empty;
     }
 }

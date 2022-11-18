@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gallery.BLL.Configurations
+namespace Gallery.DAL.Configurations
 {
     public class GalleryApplication
     {

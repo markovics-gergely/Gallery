@@ -4,6 +4,7 @@ using Gallery.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gallery.DAL.Migrations
 {
     [DbContext(typeof(GalleryDbContext))]
-    partial class GalleryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221118185706_PictureDisplayPath")]
+    partial class PictureDisplayPath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +47,7 @@ namespace Gallery.DAL.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Albums", (string)null);
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("Gallery.DAL.Domain.ApplicationRole", b =>
@@ -167,22 +169,21 @@ namespace Gallery.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FileExtension")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("FileExtension")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhysicalPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
-                    b.ToTable("Pictures", (string)null);
+                    b.ToTable("Pictures");
                 });
 
             modelBuilder.Entity("LikedAlbums", b =>
@@ -197,7 +198,7 @@ namespace Gallery.DAL.Migrations
 
                     b.HasIndex("FavoritedById");
 
-                    b.ToTable("LikedAlbums", (string)null);
+                    b.ToTable("LikedAlbums");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

@@ -48,8 +48,8 @@ namespace Gallery.DAL
                 .IsRequired();
 
             builder.Entity<ApplicationUser>()
-                .HasMany(e => e.LikedAlbums)
-                .WithMany(e => e.LikedBy)
+                .HasMany(e => e.FavoritedAlbums)
+                .WithMany(e => e.FavoritedBy)
                 .UsingEntity<Dictionary<string, object>>(
                     "LikedAlbums",
                     j => j

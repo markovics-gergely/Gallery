@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gallery.BLL.Infrastructure.Queries
+namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
-    public class GetUserAlbumsQuery
+    public class GetAlbumsDTO
     {
-        public Guid UserId { get; set; }
+        public int PageSize { get; set; }
 
         public int PageCount { get; set; }
-
-        public int PageSize { get; set; }
     }
 }

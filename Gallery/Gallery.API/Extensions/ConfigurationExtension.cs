@@ -1,4 +1,4 @@
-﻿using Gallery.BLL.Configurations;
+﻿using Gallery.DAL.Configurations;
 
 namespace Gallery.API.Extensions
 {

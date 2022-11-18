@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
-    public class AddPictureDTO
+    public class AddAlbumPicturesDTO
     {
-        public Guid AlbumId { get; set; }
-
         public IEnumerable<IFormFile> Pictures { get; set; } = Enumerable.Empty<IFormFile>();
     }
 }

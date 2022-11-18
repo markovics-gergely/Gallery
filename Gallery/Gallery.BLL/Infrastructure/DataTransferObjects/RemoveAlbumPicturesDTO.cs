@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
-    public class DeletePictureDTO
+    public class RemoveAlbumPicturesDTO
     {
-        public Guid PictureId { get; set; }
+        public IEnumerable<Guid> PictureIds { get; set; } = Enumerable.Empty<Guid>();
     }
 }

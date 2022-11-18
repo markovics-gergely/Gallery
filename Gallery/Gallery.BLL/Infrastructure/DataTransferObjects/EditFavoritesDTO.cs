@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.DataTransferObjects
 {
-    internal class RemoveAlbumFromFavorites
+    public class EditFavoritesDTO
     {
+        public IEnumerable<Guid> AlbumIds { get; set; } = Enumerable.Empty<Guid>();
     }
 }

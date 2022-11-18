@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gallery.BLL.Infrastructure.Queries
+namespace Gallery.BLL.Validators.Interfaces
 {
-    public class GetAlbumDetails
+    public interface IValidator
     {
-        public Guid AlbumId { get; set; }
+        bool Validate();
     }
 }

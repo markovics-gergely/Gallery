@@ -35,8 +35,19 @@ namespace Gallery.API.Extensions
             services.AddTransient<IRequestHandler<GetFullProfileQuery, ProfileWithNameViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
+            services.AddTransient<IRequestHandler<GetAlbumDetailsQuery, AlbumDetailsViewModel>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAlbumsQuery, IEnumerable<AlbumListViewModel>>, AlbumQueryHandler>();
+
+            services.AddTransient<IRequestHandler<EditFavoritesCommand, bool>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<AddPicturesToAlbumCommand, bool>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateAlbumCommand, bool>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteAlbumCommand, bool>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<RemovePicturesFromAlbumCommand, bool>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<LikeAlbumCommand, bool>, AlbumCommandHandler>();
+
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IFileRepository, FileRepository>();
         }
     }
 }

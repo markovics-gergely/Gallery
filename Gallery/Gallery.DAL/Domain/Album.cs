@@ -16,8 +16,10 @@ namespace Gallery.DAL.Domain
 
         public bool IsPrivate { get; set; }
 
+        public int LikeCount { get; set; }
+
         public IList<Picture> Pictures { get; set; } = new List<Picture>();
 
-        public IList<ApplicationUser> LikedBy { get; set; } = new List<ApplicationUser>();
+        public IList<ApplicationUser> FavoritedBy { get; set; } = new List<ApplicationUser>();
     }
 }

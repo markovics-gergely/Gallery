@@ -17,7 +17,7 @@ namespace Gallery.DAL.Domain
 
         public IList<Album> CreatedAlbums { get; set; } = new List<Album>();
 
-        public IList<Album> LikedAlbums { get; set; } = new List<Album>();
+        public IList<Album> FavoritedAlbums { get; set; } = new List<Album>();
 
         public string GetFullName()
         {
