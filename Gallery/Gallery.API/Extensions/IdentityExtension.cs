@@ -5,7 +5,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using Gallery.DAL.Domain;
 using Gallery.DAL;
-using Gallery.API.Types;
+using Gallery.DAL.Types;
 
 namespace Gallery.API.Extensions
 {

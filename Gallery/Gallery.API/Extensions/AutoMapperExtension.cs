@@ -13,7 +13,7 @@ namespace Gallery.API.Extensions
         /// <param name="services"></param>
         public static void AddAutoMapperExtensions(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(typeof(UserProfile), typeof(AlbumProfile));
         }
     }
 }

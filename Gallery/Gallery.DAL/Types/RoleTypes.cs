@@ -1,4 +1,4 @@
-﻿namespace Gallery.API.Types
+﻿namespace Gallery.DAL.Types
 {
     /// <summary>
     /// Types of user roles
