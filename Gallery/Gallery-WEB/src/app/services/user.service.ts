@@ -65,8 +65,9 @@ export class UserService {
    * Get identity of the user logged in
    * @returns Id of the user
    */
-  public getActualUserId(): Observable<string> {
-    return this.client.get(`${this.baseUrl}/actual-id`, {responseType: 'text'});
+  public getActualUserId(): string {
+    const token = localStorage.getItem('accessToken');
+    return this.jwtHelper.decodeToken(token ?? '')?.sub;
   }
 
   /**
@@ -75,6 +76,8 @@ export class UserService {
    */
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('accessToken');
+    console.log(this.jwtHelper.decodeToken(token ?? ''));
+    
     return token !== null && !this.jwtHelper.isTokenExpired(token);
   }
 

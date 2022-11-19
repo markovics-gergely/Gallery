@@ -56,3 +56,19 @@ export interface AlbumViewModel {
     likeCount: number;
     pictureUrls: string[];
 }
+
+export interface AlbumDetailViewModel {
+    id?: string;
+    name?: string;
+    creatorName?: string;
+    creatorId?: string;
+    isPrivate?: boolean;
+    isFavorite?: boolean;
+    likeCount?: number;
+    pictureUrls?: string[];
+}
+
+export interface PagerModel {
+    page: number;
+    pageSize: number;
+}

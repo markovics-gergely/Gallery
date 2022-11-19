@@ -1,1 +1,54 @@
-<p>gallery works!</p>
+<div class="card" *ngIf="gallery">
+  <div class="card-item">
+    <div class="title">Name</div>
+    <div class="value">
+      {{ gallery.name }}
+    </div>
+  </div>
+  <div class="card-item">
+    <div class="title">Creator</div>
+    <div class="value">
+      {{ gallery.creatorName }}
+    </div>
+  </div>
+  <div class="card-item">
+      <div class="footer-text">
+          {{gallery.pictureUrls?.length || 0}} Pictures
+      </div>
+  </div>
+  <div class="card-item">
+      <div class="footer-text" *ngIf="(gallery.likeCount || 0) > 1">
+          {{gallery.likeCount}} people liked this gallery
+      </div>
+      <div class="footer-text" *ngIf="(gallery.likeCount || 0) === 1">
+          {{gallery.likeCount}} person liked this gallery
+      </div>
+      <div class="footer-text" *ngIf="(gallery.likeCount || 0) === 0">
+          Nobody liked this gallery
+      </div>
+  </div>
+  <div class="card-item">
+      <div class="footer-text" *ngIf="gallery.isPrivate">
+          <i class="bx bx-lock-alt"></i> Private
+      </div>
+      <div class="footer-text" *ngIf="!gallery.isPrivate">
+          <i class="bx bx-lock-open-alt"></i> Public
+      </div>
+  </div>
+  <div class="card-item">
+      <div class="footer-text" *ngIf="gallery.isFavorite">
+          <i class="bx bx-star"></i> Favorited
+      </div>
+  </div>
+</div>
+<div class="sub-title">Pictures</div>
+<div *ngIf="pictures" class="album-container">
+    <div class="album" *ngFor="let picture of pictures">
+        <div class="image-container" (click)="preview(picture)">
+            <img class="img-back" [src]="picture" alt="cover">
+            <img [src]="picture" alt="cover">
+            <i *ngIf="ownGallery" class='bx bx-trash bx-tada-hover delete-button' (click)="delete($event, picture)"></i>
+        </div>
+    </div>
+</div>
+<app-pager [itemCount]="itemCount" (changeEvent)="setPage($event)"></app-pager>

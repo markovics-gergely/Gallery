@@ -1,14 +1,30 @@
 <div class="container">
     <div class="main-container">
         <div class="title-line">
-            <div class="title" *ngIf="!selectedId">My Galleries</div>
-            <div class="buttons">
-                <button mat-button><i class='bx bx-image-alt bx-tada-hover'></i></button>
-                <button mat-button><i class='bx bx-plus bx-tada-hover'></i></button>
+            <div class="title" *ngIf="!gallery">My Galleries</div>
+            <div class="buttons" *ngIf="!gallery">
+                <button mat-button><i class='bx bx-plus bx-tada-hover' (click)="addGallery()"></i></button>
             </div>
-            <div class="title" *ngIf="selectedId">{{selectedId}}</div>
+            <div class="buttons" *ngIf="gallery">
+                <button mat-button matTooltip="Back to galleries" (click)="backToList()">
+                    <i class='bx bx-arrow-back bx-tada-hover'></i>
+                </button>
+                <button mat-button [matTooltip]="gallery.isFavorite ? 'Unfavorite' : 'Favorite'">
+                    <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
+                </button>
+                <button mat-button [matTooltip]="gallery.isPrivate ? 'Set public' : 'Set public'">
+                    <i class='bx bx-tada-hover' [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
+                </button>
+                <button mat-button matTooltip="Delete gallery">
+                    <i class='bx bx-trash bx-tada-hover'></i>
+                </button>
+                <button mat-button matTooltip="Add picture">
+                    <i class='bx bx-plus bx-tada-hover'></i>
+                </button>
+            </div>
+            <div class="title" style="margin-left: 10px;" *ngIf="gallery">{{gallery.name}}</div>
         </div>
-        <div *ngIf="galleries && !selectedId" class="gallery-list">
+        <div *ngIf="galleries && !gallery" class="gallery-list">
             <div class="gallery" (click)="selectGallery(gallery.id)" *ngFor="let gallery of galleries">
                 <div class="image-container">
                     <div *ngFor="let url of gallery.pictureUrls" class="image-sub-container">
@@ -64,8 +80,8 @@
                     </div>
                 </div>
             </div>
-            <app-pager [pageCount]="10" (pageEvent)="setPage($event)" (sizeEvent)="setPageSize($event)"></app-pager>
+            <app-pager [itemCount]="50" (changeEvent)="setPage($event)"></app-pager>
         </div>
-        <app-gallery *ngIf="selectedId"></app-gallery>
+        <app-gallery [gallery]="gallery" *ngIf="gallery"></app-gallery>
     </div>
 </div>

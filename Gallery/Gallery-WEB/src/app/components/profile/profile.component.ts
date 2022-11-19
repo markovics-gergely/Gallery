@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProfileAlbumViewModel, ProfileViewModel } from 'models';
 import { LoadingService } from 'src/app/services/loading.service';
+import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -16,7 +17,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +50,9 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/mygalleries', id]);
   }
 
+  get isAdmin(): boolean {
+    return this.tokenService.getRole() === 'Admin';
+  }
   get profileData() { return this._profileData; }
   get albums() { return this._albums; }
 }

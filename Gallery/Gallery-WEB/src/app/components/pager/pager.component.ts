@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PagerModel } from 'models';
 
 @Component({
   selector: 'app-pager',
@@ -6,33 +7,38 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./pager.component.scss']
 })
 export class PagerComponent implements OnInit {
-  @Input() pageCount: number = 0;
-  @Output() pageEvent = new EventEmitter<number>();
-  @Output() sizeEvent = new EventEmitter<number>();
-  private _pageSizes: number[] = [5, 10, 20, 50, 100];
+  @Input() itemCount: number = 0;
+  @Output() changeEvent = new EventEmitter<PagerModel>();
+  private _pageSizes: number[] = [1, 5, 10, 20, 50, 100];
   private _page: number = 0;
   private _pageSize: number = 10;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.sizeEvent.emit(this._pageSize);
-    this.pageEvent.emit(this._page);
+    this.emitChange();
+  }
+
+  private emitChange() {
+    this.changeEvent.emit({
+      page: this._page,
+      pageSize: this._pageSize
+    });
   }
 
   stepPage(upDown: boolean) {
     this._page += upDown ? 1 : -1;
-    this.pageEvent.emit(this._page);
+    this.emitChange();
   }
 
   stepTo(page: number) {
     this._page = page;
-    this.pageEvent.emit(this._page);
+    this.emitChange();
   }
 
   stepToEnd(upDown: boolean) {
     this._page = upDown ? this.pageCount - 1 : 0;
-    this.pageEvent.emit(this._page);
+    this.emitChange();
   }
 
   isAtEnd(upDown: boolean): boolean {
@@ -51,10 +57,11 @@ export class PagerComponent implements OnInit {
   changeSize(event: Event) {
     if (typeof event === "number") {
       this._pageSize = event;
-      this.sizeEvent.emit(this._pageSize);
+      this.emitChange();
     }
   }
 
+  get pageCount(): number { return Math.ceil(this.itemCount / this._pageSize); }
   get pageSizes(): number[] { return this._pageSizes; }
   get pageSize(): number { return this._pageSize; }
   get page(): number { return this._page; }

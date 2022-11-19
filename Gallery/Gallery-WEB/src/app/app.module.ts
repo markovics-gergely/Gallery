@@ -22,6 +22,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatBadgeModule} from '@angular/material/badge';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { PagerComponent } from './components/pager/pager.component';
+import { PreviewComponent } from './components/preview/preview.component';
+import { ProfileDialogComponent } from './components/dialogs/profile-dialog/profile-dialog.component';
+import { AlbumDialogComponent } from './components/dialogs/album-dialog/album-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -36,7 +41,10 @@ import { PagerComponent } from './components/pager/pager.component';
     FavoritesComponent,
     BrowseComponent,
     GalleryComponent,
-    PagerComponent
+    PagerComponent,
+    PreviewComponent,
+    ProfileDialogComponent,
+    AlbumDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +57,8 @@ import { PagerComponent } from './components/pager/pager.component';
     MatSnackBarModule,
     NgbModule,
     MatBadgeModule,
+    MatDialogModule,
+    MatTooltipModule,
     JwtModule.forRoot({
       config: { },
     })
