@@ -9,6 +9,7 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class AlbumService {
+  /** Base url of album endpoint */
   private _baseUrl = `${environment.baseUrl}/album`;
 
   constructor(

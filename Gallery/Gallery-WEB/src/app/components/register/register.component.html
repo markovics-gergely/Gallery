@@ -24,7 +24,8 @@
             <input id="pw" type="password" placeholder="Password" formControlName="pw" required minlength="7"/>
             <label for="pwc">Confirm password</label>
             <input id="pwc" type="password" placeholder="Confirm password" formControlName="pwc" required minlength="7"/>
-            <button class="button" type="submit">Register</button>
+            <button class="button" type="submit" [disabled]="!validForm">Register</button>
+            <div class="later"><a [routerLink]="['/browse']">Later</a></div>
         </form>
     </div>
 </div>

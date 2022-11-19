@@ -10,11 +10,12 @@
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
         transition: 0.3s;
         width: 40%;
-        min-height: 400px;
+        min-height: 350px;
         min-width: 400px;
         border-radius: 10px;
         margin: auto;
         padding: 20px;
+        padding-bottom: 10px;
         background-color: var(--secondary-color);
         display: flex;
         justify-content: flex-start;
@@ -101,6 +102,23 @@
                     box-shadow: 0;
                     outline: none !important;
                     border: 2px solid var(--primary-color);
+                }
+            }
+
+            .later {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+                a {
+                    padding: 5px 20px;
+                    border-radius: 5px;
+                    color: var(--text-color);
+                    cursor: pointer;
+                    text-decoration: none;
+                    &.active, &:hover {
+                        color: var(--text-color);
+                        background-color: rgba(0,0,0,0.1);
+                    }
                 }
             }
         }

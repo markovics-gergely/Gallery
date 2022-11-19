@@ -15,6 +15,7 @@
         border-radius: 10px;
         margin: auto;
         padding: 20px;
+        padding-bottom: 10px;
         background-color: var(--secondary-color);
         display: flex;
         justify-content: flex-start;
@@ -99,6 +100,15 @@
                 &:active {
                     background-color: var(--accent-color-dark);
                 }
+
+                &:disabled {
+                    opacity: 0.5;
+                    box-shadow: none;
+                    background-color: var(--primary-color);
+                    cursor: auto;
+                    transform: scale(1);
+                    filter: brightness(100%);
+                }
             }
 
             input {
@@ -112,6 +122,23 @@
                     box-shadow: 0;
                     outline: none !important;
                     border: 2px solid var(--primary-color);
+                }
+            }
+
+            .later {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+                a {
+                    padding: 5px 20px;
+                    border-radius: 5px;
+                    color: var(--text-color);
+                    cursor: pointer;
+                    text-decoration: none;
+                    &.active, &:hover {
+                        color: var(--text-color);
+                        background-color: rgba(0,0,0,0.1);
+                    }
                 }
             }
         }

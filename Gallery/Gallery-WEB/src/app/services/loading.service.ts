@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LoadingService {
+  /** Flag to display loading screen */
   private _isLoading: boolean = false;
 
   get isLoading() { return this._isLoading; }

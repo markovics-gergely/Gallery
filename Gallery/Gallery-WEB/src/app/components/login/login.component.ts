@@ -31,6 +31,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Submit login to the server
+   */
   onSubmit(): void {
     if (this.loginForm) {
       let loginUserDTO: LoginUserDTO = { 
@@ -38,41 +41,43 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.get('password')?.value 
       };
       this.loadingService.isLoading = true;
-      this.userService.login(loginUserDTO).subscribe(
-        response => {
+
+      this.userService.login(loginUserDTO).subscribe({
+        next: (response) => {
           this.setLocalStorage(loginUserDTO, response as LoginUserResponse);
           this.router.navigate(['profile']);
-          this.loadingService.isLoading = false;
         },
-        error => {
-          console.log(error);
-          this.loadingService.isLoading = false;
-          
-          this.snackService.openSnackBar(error.statusText, "OK");
+        error: (err) => {
+          console.log(err);
+          this.snackService.openSnackBar(err.statusText, "OK");
           this.tokenService.deleteLocalStorage();
         }
-      );
+      }).add(() => { this.loadingService.isLoading = false; });
       this.loginForm.reset();
     }
   }
 
+  /**
+   * Process and store login response in local storage
+   * @param loginDto Login values sent
+   * @param loginUserResponse Login response received
+   */
   private setLocalStorage(loginDto: LoginUserDTO, loginUserResponse: LoginUserResponse){
     this.tokenService.setLocalStorage(loginUserResponse.access_token, loginUserResponse.refresh_token, loginDto.username);
     const refreshTimer = timer((loginUserResponse.expires_in*1000)-5000, (loginUserResponse.expires_in*1000)-5000); 
     
     refreshTimer.subscribe(() => {
-      this.userService.refresh(this.tokenService.getRefreshToken()).subscribe(
-        res => {
-          let response = res as LoginUserResponse;
+      this.userService.refresh(this.tokenService.getRefreshToken()).subscribe({
+        next: (res) => {
+          const response = res as LoginUserResponse;
           this.tokenService.setAccessToken(response.access_token)
-          this.tokenService.setRefreshToken(response.refresh_token);      
-        }, 
-        err => {
+          this.tokenService.setRefreshToken(response.refresh_token);   
+        },
+        error: (err) => {
           console.log(err);
           this.tokenService.deleteLocalStorage();
         }
-      )
-    })
+      });
+    });
   }
-
 }

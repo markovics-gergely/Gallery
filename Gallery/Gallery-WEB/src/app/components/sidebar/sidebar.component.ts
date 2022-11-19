@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SidebarService } from 'src/app/services/sidebar.service';
 import { TokenService } from 'src/app/services/token.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,12 +10,12 @@ import { TokenService } from 'src/app/services/token.service';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  private _isOpen: boolean = true;
 
   constructor(
     private router: Router,
     private tokenService: TokenService,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -24,6 +25,10 @@ export class SidebarComponent implements OnInit {
    * Getter for open status
    */
   get isOpen() { return this.sidebarService.isOpen; }
+  /**
+   * Getter for authentication status
+   */
+  get isAuthenticated() { return this.userService.isAuthenticated(); }
 
   /**
    * Switch open status
@@ -44,5 +49,12 @@ export class SidebarComponent implements OnInit {
    */
   logout(): void {
     this.tokenService.deleteLocalStorage();
+  }
+
+  /**
+   * Navigate to login page
+   */
+  login(): void {
+    this.router.navigate(['login']);
   }
 }

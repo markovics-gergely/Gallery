@@ -50,6 +50,9 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/mygalleries', id]);
   }
 
+  /**
+   * Getter for user administrator status
+   */
   get isAdmin(): boolean {
     return this.tokenService.getRole() === 'Admin';
   }

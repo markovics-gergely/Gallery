@@ -42,8 +42,12 @@ const routes: Routes = [
   },
   {
     path: 'browse',
-    component: BrowseComponent,
-    canActivate: [AuthGuard]
+    component: BrowseComponent
+  },
+  {
+    path: '',
+    redirectTo: 'browse',
+    pathMatch: 'full'
   },
   {
     path: '**',

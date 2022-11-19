@@ -15,7 +15,7 @@
 
     <div class="menu-bar">
         <div class="menu">
-            <ul class="menu-links">
+            <ul class="menu-links" *ngIf="isAuthenticated">
                 <li class="nav-link">
                     <a routerLink="/profile" [ngClass]="activeMenu === 'profile' ? 'active' : ''">
                         <i class='bx icon bxs-user bx-tada-hover'></i>
@@ -23,7 +23,7 @@
                     </a>
                 </li>
             </ul>
-            <ul class="menu-links">
+            <ul class="menu-links" *ngIf="isAuthenticated">
                 <li class="nav-link">
                     <a routerLink="/mygalleries" [ngClass]="activeMenu === 'mygalleries' ? 'active' : ''">
                         <i class='bx icon bx-images bx-tada-hover'></i>
@@ -31,7 +31,7 @@
                     </a>
                 </li>
             </ul>
-            <ul class="menu-links">
+            <ul class="menu-links" *ngIf="isAuthenticated">
                 <li class="nav-link">
                     <a routerLink="/favorites" [ngClass]="activeMenu === 'favorites' ? 'active' : ''">
                         <i class='bx icon bx-star bx-tada-hover'></i>
@@ -50,11 +50,20 @@
         </div>
 
         <div class="bottom-content">
+            <ul *ngIf="!isAuthenticated">
+                <li class="nav-link">
+                    <a routerLink="/register">
+                        <i class='bx bx-user bx-tada-hover icon'></i>
+                        <span class="text nav-text">Register</span>
+                    </a>
+                </li>
+            </ul>
             <ul>
                 <li class="nav-link">
                     <a routerLink="/login" (click)="logout()">
-                        <i class='bx bx-log-out bx-tada-hover icon'></i>
-                        <span class="text nav-text">Log out</span>
+                        <i class='bx bx-tada-hover icon' [ngClass]="isAuthenticated ? 'bx-log-out' : 'bx-log-in'"></i>
+                        <span class="text nav-text" *ngIf="isAuthenticated">Log out</span>
+                        <span class="text nav-text" *ngIf="!isAuthenticated">Log in</span>
                     </a>
                 </li>
             </ul>

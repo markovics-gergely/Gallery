@@ -15,9 +15,15 @@ export class PreviewComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Close preview page
+   */
   close() {
     this.previewService.previewImage = undefined;
   }
 
+  /**
+   * Getter for the previewable image url
+   */
   get previewImage() { return this.previewService.previewImage; }
 }

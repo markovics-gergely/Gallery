@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumDetailViewModel, AlbumViewModel, PagerModel } from 'models';
 import { LoadingService } from 'src/app/services/loading.service';
-import { PreviewService } from 'src/app/services/preview.service';
 import { AlbumDialogComponent } from '../dialogs/album-dialog/album-dialog.component';
 
 @Component({
@@ -20,8 +19,7 @@ export class MyGalleriesComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loadingService: LoadingService,
-    private dialog: MatDialog,
-    private previewService: PreviewService
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -57,14 +55,25 @@ export class MyGalleriesComponent implements OnInit {
     })
   }
 
+  /**
+   * Navigate to the details of the selected gallery
+   * @param value Identity of the selected gallery
+   */
   selectGallery(value: string) {
     this.router.navigate(['mygalleries', value]);
   }
 
+  /**
+   * Process pager change events
+   * @param value Pager changed event
+   */
   setPage(value: PagerModel) {
     console.log(value);
   }
 
+  /**
+   * Open gallery creator page
+   */
   addGallery() {
     const dialogRef = this.dialog.open(AlbumDialogComponent, {
       width: '60%',
@@ -78,6 +87,9 @@ export class MyGalleriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Navigate back to my gallery list
+   */
   backToList() {
     this.router.navigate(['mygalleries']);
   }
