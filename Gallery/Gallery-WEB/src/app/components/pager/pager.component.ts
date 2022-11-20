@@ -18,7 +18,9 @@ export class PagerComponent implements OnInit {
   /** Selected page size */
   private _pageSize: number = 10;
 
-  constructor() { }
+  constructor() {
+    this.emitChange();
+  }
 
   ngOnInit(): void {
     this.emitChange();

@@ -13,7 +13,7 @@
   </div>
   <div class="card-item">
       <div class="footer-text">
-          {{gallery.pictureUrls?.length || 0}} Pictures
+          {{gallery.pictures?.length || 0}} Pictures
       </div>
   </div>
   <div class="card-item">
@@ -44,10 +44,10 @@
 <div class="sub-title">Pictures</div>
 <div *ngIf="pictures" class="album-container">
     <div class="album" *ngFor="let picture of pictures">
-        <div class="image-container" (click)="preview(picture)">
-            <img class="img-back" [src]="picture" alt="cover">
-            <img [src]="picture" alt="cover">
-            <i *ngIf="ownGallery" class='bx bx-trash bx-tada-hover delete-button' (click)="delete($event, picture)"></i>
+        <div class="image-container" (click)="preview(picture.displayUrl)">
+            <img class="img-back" [src]="picture.displayUrl" alt="cover">
+            <img [src]="picture.displayUrl" alt="cover">
+            <i *ngIf="ownGallery" class='bx bx-trash bx-tada-hover delete-button' (click)="delete($event, picture.id)"></i>
         </div>
     </div>
 </div>

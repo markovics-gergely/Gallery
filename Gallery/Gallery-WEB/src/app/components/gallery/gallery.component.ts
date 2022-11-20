@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlbumDetailViewModel, PagerModel } from 'models';
+import { AlbumViewModel, PagerModel } from 'models';
 import { ConfirmService } from 'src/app/services/confirm.service';
 import { PreviewService } from 'src/app/services/preview.service';
 import { UserService } from 'src/app/services/user.service';
@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class GalleryComponent implements OnInit {
   private _pager: PagerModel | undefined;
-  @Input() public gallery: AlbumDetailViewModel | undefined;
+  @Input() public gallery: AlbumViewModel | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,9 +23,6 @@ export class GalleryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      console.log(params['id']);
-    });
     this.cdr.detectChanges();
   }
 
@@ -61,18 +58,18 @@ export class GalleryComponent implements OnInit {
   }
 
   /** Count of images in the gallery */
-  get itemCount() { return this.gallery?.pictureUrls?.length || 0; }
+  get itemCount() { return this.gallery?.pictures?.length || 0; }
   /** Flag for gallery ownership */
   get ownGallery(): boolean { return this.gallery?.creator?.id === this.userService.getActualUserId(); }
   /** Get sublist of the images by pager data */
   get pictures() {
     if (this._pager) {
-      const length = this.gallery?.pictureUrls?.length || 0;
+      const length = this.gallery?.pictures?.length || 0;
       const start = this._pager.page * this._pager.pageSize;
       let end = start + this._pager.pageSize;
       end = end > length ? length : end;
-      return this.gallery?.pictureUrls?.slice(start, end);
+      return this.gallery?.pictures?.slice(start, end);
     }
-    return this.gallery?.pictureUrls;
+    return this.gallery?.pictures;
   }
 }
