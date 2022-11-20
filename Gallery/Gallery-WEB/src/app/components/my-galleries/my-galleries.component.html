@@ -3,19 +3,19 @@
         <div class="title-line">
             <div class="title" *ngIf="!gallery">My Galleries</div>
             <div class="buttons" *ngIf="!gallery">
-                <button mat-button><i class='bx bx-plus bx-tada-hover' (click)="addGallery()"></i></button>
+                <button mat-button (click)="addGallery()"><i class='bx bx-plus bx-tada-hover'></i></button>
             </div>
             <div class="buttons" *ngIf="gallery">
                 <button mat-button matTooltip="Back to galleries" (click)="backToList()">
                     <i class='bx bx-arrow-back bx-tada-hover'></i>
                 </button>
-                <button mat-button [matTooltip]="gallery.isFavorite ? 'Unfavorite' : 'Favorite'">
+                <button mat-button [matTooltip]="gallery.isFavorite ? 'Unfavorite' : 'Favorite'" (click)="addOrRemoveFavorite(gallery, $event)">
                     <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
                 </button>
-                <button mat-button [matTooltip]="gallery.isPrivate ? 'Set public' : 'Set public'">
+                <button mat-button [matTooltip]="gallery.isPrivate ? 'Set public' : 'Set public'" (click)="setPublicStatus(gallery, $event)">
                     <i class='bx bx-tada-hover' [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
                 </button>
-                <button mat-button matTooltip="Delete gallery">
+                <button mat-button matTooltip="Delete gallery" (click)="deleteGallery(gallery, $event)">
                     <i class='bx bx-trash bx-tada-hover'></i>
                 </button>
                 <button mat-button matTooltip="Add picture">
@@ -25,7 +25,7 @@
             <div class="title" style="margin-left: 10px;" *ngIf="gallery">{{gallery.name}}</div>
         </div>
         <div *ngIf="galleries && !gallery" class="gallery-list">
-            <div class="gallery" (click)="selectGallery(gallery.id)" *ngFor="let gallery of galleries">
+            <div class="gallery" (click)="selectGallery(gallery.id || '')" *ngFor="let gallery of galleries">
                 <div class="image-container">
                     <div *ngFor="let url of gallery.pictureUrls" class="image-sub-container">
                         <img class="img-back" [src]="url" alt="cover">
@@ -40,17 +40,17 @@
                     </div>
                     <div class="card-item">
                         <div class="footer-text">
-                            {{gallery.pictureUrls.length}} Pictures
+                            {{gallery.pictureUrls?.length}} Pictures
                         </div>
                     </div>
                     <div class="card-item">
-                        <div class="footer-text" *ngIf="gallery.likeCount > 1">
+                        <div class="footer-text" *ngIf="(gallery.likeCount || 0) > 1">
                             {{gallery.likeCount}} people liked this gallery
                         </div>
-                        <div class="footer-text" *ngIf="gallery.likeCount === 1">
+                        <div class="footer-text" *ngIf="(gallery.likeCount || 0) === 1">
                             {{gallery.likeCount}} person liked this gallery
                         </div>
-                        <div class="footer-text" *ngIf="gallery.likeCount === 0">
+                        <div class="footer-text" *ngIf="(gallery.likeCount || 0) === 0">
                             Nobody liked this gallery
                         </div>
                     </div>
@@ -69,11 +69,11 @@
                     </div>
                     <div class="card-item bottom-buttons">
                         <div class="button-list">
-                            <button mat-button><i class='bx bx-trash bx-tada-hover'></i></button>
-                            <button mat-button>
+                            <button mat-button (click)="deleteGallery(gallery, $event)"><i class='bx bx-trash bx-tada-hover'></i></button>
+                            <button mat-button (click)="addOrRemoveFavorite(gallery, $event)">
                                 <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
                             </button>
-                            <button mat-button>
+                            <button mat-button (click)="setPublicStatus(gallery, $event)">
                                 <i class='bx bx-tada-hover' [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
                             </button>
                         </div>

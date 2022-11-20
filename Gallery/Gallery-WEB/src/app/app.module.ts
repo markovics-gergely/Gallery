@@ -27,6 +27,8 @@ import { ProfileDialogComponent } from './components/dialogs/profile-dialog/prof
 import { AlbumDialogComponent } from './components/dialogs/album-dialog/album-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmComponent } from './components/dialogs/confirm/confirm.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     PagerComponent,
     PreviewComponent,
     ProfileDialogComponent,
-    AlbumDialogComponent
+    AlbumDialogComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +62,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatBadgeModule,
     MatDialogModule,
     MatTooltipModule,
+    MatCheckboxModule,
     JwtModule.forRoot({
       config: { },
     })

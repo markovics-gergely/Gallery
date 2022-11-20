@@ -49,19 +49,19 @@ export interface ProfileAlbumViewModel {
 }
 
 export interface AlbumViewModel {
-    id: string;
-    name: string;
-    isPrivate: boolean;
-    isFavorite: boolean;
-    likeCount: number;
-    pictureUrls: string[];
+    id?: string;
+    name?: string;
+    isPrivate?: boolean;
+    isFavorite?: boolean;
+    likeCount?: number;
+    creator?: UserNameViewModel;
+    pictureUrls?: string[];
 }
 
 export interface AlbumDetailViewModel {
     id?: string;
     name?: string;
-    creatorName?: string;
-    creatorId?: string;
+    creator?: UserNameViewModel;
     isPrivate?: boolean;
     isFavorite?: boolean;
     likeCount?: number;
@@ -71,4 +71,32 @@ export interface AlbumDetailViewModel {
 export interface PagerModel {
     page: number;
     pageSize: number;
+}
+
+export interface UserNameViewModel {
+    id: string;
+    userName: string;
+}
+
+export interface PagerList<T> {
+    total: number;
+    values: T[];
+}
+
+export interface CreateAlbumDTO {
+    name: string,
+    isPrivate: boolean,
+    pictures: File[]
+}
+
+export interface EditFavoritesDTO {
+    albumIds: string[];
+}
+
+export interface AddAlbumPicturesDTO {
+    pictures: File[];
+}
+
+export interface RemoveAlbumPicturesDTO {
+    PictureIds: string[];
 }

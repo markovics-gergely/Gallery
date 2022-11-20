@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumDetailViewModel, AlbumViewModel, PagerModel } from 'models';
+import { AlbumService } from 'src/app/services/album.service';
+import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { AlbumDialogComponent } from '../dialogs/album-dialog/album-dialog.component';
 
@@ -19,7 +21,9 @@ export class MyGalleriesComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loadingService: LoadingService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private albumService: AlbumService,
+    private confirmAlbumService: ConfirmAlbumService
   ) { }
 
   ngOnInit(): void {
@@ -30,8 +34,10 @@ export class MyGalleriesComponent implements OnInit {
         this._gallery = {
           id: "JusticeForHarambe",
           name: "Rest in peace",
-          creatorName: "Random kid",
-          creatorId: "aefc41a9-37a5-467d-007f-08dac42e492a",
+          creator: {
+            id: "aefc41a9-37a5-467d-007f-08dac42e492a",
+            userName: "Random kid"
+          },
           isPrivate: true,
           isFavorite: true,
           likeCount: 15,
@@ -80,10 +86,11 @@ export class MyGalleriesComponent implements OnInit {
       data: {}
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.loadingService.isLoading = true;
       console.log(result);
-      if (result) {
-        this.router.navigate(['mygalleries', result.id]);
-      }
+      this.albumService.createAlbum(result).subscribe(resp => {
+        console.log(resp);
+      }).add(() => this.loadingService.isLoading = false);
     });
   }
 
@@ -92,6 +99,21 @@ export class MyGalleriesComponent implements OnInit {
    */
   backToList() {
     this.router.navigate(['mygalleries']);
+  }
+
+  addOrRemoveFavorite(g: AlbumDetailViewModel | undefined, event: Event) {
+    event.stopImmediatePropagation();
+    this.confirmAlbumService.addOrRemoveFavorite(g);
+  }
+
+  setPublicStatus(g: AlbumDetailViewModel | undefined, event: Event) {
+    event.stopImmediatePropagation();
+    this.confirmAlbumService.setPublicStatus(g);
+  }
+
+  deleteGallery(g: AlbumDetailViewModel | undefined, event: Event) {
+    event.stopImmediatePropagation();
+    this.confirmAlbumService.deleteGallery(g);
   }
 
   get galleries() { return this._galleries; }

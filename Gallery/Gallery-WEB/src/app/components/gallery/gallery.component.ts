@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlbumDetailViewModel, PagerModel } from 'models';
+import { ConfirmService } from 'src/app/services/confirm.service';
 import { PreviewService } from 'src/app/services/preview.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -17,6 +18,7 @@ export class GalleryComponent implements OnInit {
     private route: ActivatedRoute,
     private previewService: PreviewService,
     private userService: UserService,
+    private confirmService: ConfirmService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -50,12 +52,18 @@ export class GalleryComponent implements OnInit {
    */
   delete(e: Event, url: string) {
     e.stopImmediatePropagation();
+    this.confirmService.confirm(
+      "Delete picture",
+      "Are you sure you want to delete this picture?"
+    ).subscribe(accepted => {
+      console.log(accepted);
+    });
   }
 
   /** Count of images in the gallery */
   get itemCount() { return this.gallery?.pictureUrls?.length || 0; }
   /** Flag for gallery ownership */
-  get ownGallery(): boolean { return this.gallery?.creatorId === this.userService.getActualUserId(); }
+  get ownGallery(): boolean { return this.gallery?.creator?.id === this.userService.getActualUserId(); }
   /** Get sublist of the images by pager data */
   get pictures() {
     if (this._pager) {
