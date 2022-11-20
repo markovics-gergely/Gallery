@@ -3,20 +3,24 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Commands
 {
-    public class EditFavoritesCommand : IRequest<bool>
+    public class EditAlbumDataCommand : IRequest<Unit>
     {
-        public EditFavoritesDTO Dto { get; set; }
+        public Guid AlbumId { get; set; }
+
+        public EditAlbumDTO Dto { get; set; }
 
         public ClaimsPrincipal User { get; set; }
 
-        public EditFavoritesCommand(EditFavoritesDTO dto, ClaimsPrincipal user)
+        public EditAlbumDataCommand(Guid albumId, EditAlbumDTO dto, ClaimsPrincipal user)
         {
+            AlbumId = albumId;
             Dto = dto;
             User = user;
         }

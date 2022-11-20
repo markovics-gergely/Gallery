@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Gallery.BLL.Exceptions;
 using Gallery.BLL.Extensions;
 using Gallery.BLL.Infrastructure.Commands;
 using Gallery.BLL.Infrastructure.Queries;
@@ -19,13 +20,15 @@ using System.Threading.Tasks;
 namespace Gallery.BLL.Infrastructure
 {
     public class AlbumQueryHandler :
-        IRequestHandler<GetAlbumDetailsQuery, AlbumDetailsViewModel>,
-        IRequestHandler<GetAlbumsQuery, EnumerableWithCountViewModel<AlbumListViewModel>>,
-        IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithCountViewModel<AlbumListViewModel>>
+        IRequestHandler<GetOwnAlbumsQuery, EnumerableWithCountViewModel<UserProfileViewModel>>,
+        IRequestHandler<GetAlbumDetailsQuery, AlbumViewModel>,
+        IRequestHandler<GetAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>,
+        IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private IValidator? _validator;
+        private const int _albumPictureCount = 9;
 
         public AlbumQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -33,7 +36,7 @@ namespace Gallery.BLL.Infrastructure
             _mapper = mapper;
         }
 
-        public Task<AlbumDetailsViewModel> Handle(GetAlbumDetailsQuery request, CancellationToken cancellationToken)
+        public Task<AlbumViewModel> Handle(GetAlbumDetailsQuery request, CancellationToken cancellationToken)
         {
             var albumEntity = _unitOfWork.AlbumRepository.Get(
                 filter: x => x.Id == request.AlbumId, 
@@ -41,7 +44,7 @@ namespace Gallery.BLL.Infrastructure
                 .FirstOrDefault();
             if (albumEntity == null)
             {
-                throw new ArgumentException("Requested album not found", nameof(request));
+                throw new EntityNotFoundException("Requested album not found");
             }
 
             if (request.User == null)
@@ -58,30 +61,34 @@ namespace Gallery.BLL.Infrastructure
             var isValid = _validator.Validate();
             if (!isValid)
             {
-                throw new ArgumentException("Unauthorized access", nameof(request));
+                throw new ValidationErrorException("Cannot access this album");
             }
-            var albumViewModel = _mapper.Map<AlbumDetailsViewModel>(albumEntity);
+            var albumViewModel = _mapper.Map<AlbumViewModel>(albumEntity);
             return Task.FromResult(albumViewModel);
         }
 
-        public Task<EnumerableWithCountViewModel<AlbumListViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithCountViewModel<AlbumViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Album, bool>> filter = x => !x.IsPrivate;
             if (request.UserId != null)
             {
-                var userId = request.UserId;
-                filter = x => !x.IsPrivate && x.Creator.Id == userId;
+                filter = x => !x.IsPrivate && x.Creator.Id == request.UserId;
             }
             var albumEntities = _unitOfWork.AlbumRepository.Get(
                 filter: filter,
                 orderBy: x => x.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize).OrderBy(x => x.Name), 
-                includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator))
+                includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator), nameof(Album.FavoritedBy))
                 ).ToList();
-            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumListViewModel>>(albumEntities);
+
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumViewModel>>(albumEntities);
+            foreach (var album in albumsViewModelWithCount.Values)
+            {
+                album.Pictures = album.Pictures.Take(Math.Min(album.Pictures.Count(), _albumPictureCount));
+            }
             return Task.FromResult(albumsViewModelWithCount);
         }
 
-        public Task<EnumerableWithCountViewModel<AlbumListViewModel>> Handle(GetUserFavoriteAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithCountViewModel<AlbumViewModel>> Handle(GetUserFavoriteAlbumsQuery request, CancellationToken cancellationToken)
         {
             var userId = Guid.Parse(request.User.GetUserIdFromJwt());
             var albumEntities = _unitOfWork.UserRepository.Get(
@@ -89,9 +96,25 @@ namespace Gallery.BLL.Infrastructure
                 includeProperties: string.Join(',', nameof(ApplicationUser.FavoritedAlbums), "FavoritedAlbums.Pictures")
                 ).First();
 
-            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumListViewModel>>(
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumViewModel>>(
                 albumEntities.FavoritedAlbums.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize)
                 );
+            foreach (var album in albumsViewModelWithCount.Values)
+            {
+                album.Pictures = album.Pictures.Take(Math.Min(album.Pictures.Count(), _albumPictureCount));
+            }
+            return Task.FromResult(albumsViewModelWithCount);
+        }
+
+        public Task<EnumerableWithCountViewModel<UserProfileViewModel>> Handle(GetOwnAlbumsQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<Album, bool>> filter = x => x.Creator.Id == Guid.Parse(request.User.GetUserIdFromJwt());
+            var albumEntities = _unitOfWork.AlbumRepository.Get(
+                filter: filter,
+                orderBy: x => x.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize).OrderBy(x => x.Name),
+                includeProperties: string.Join(',', nameof(Album.Pictures))
+                ).ToList();
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<UserProfileViewModel>>(albumEntities);
             return Task.FromResult(albumsViewModelWithCount);
         }
     }
