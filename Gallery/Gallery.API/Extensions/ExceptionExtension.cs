@@ -31,6 +31,13 @@ namespace Gallery.API.Extensions
                     pd.Title = ex.Message;
                     return pd;
                 });
+                options.Map<ValidationErrorException>(
+                (ctx, ex) =>
+                {
+                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status400BadRequest);
+                    pd.Title = ex.Message;
+                    return pd;
+                });
             });
         }
     }

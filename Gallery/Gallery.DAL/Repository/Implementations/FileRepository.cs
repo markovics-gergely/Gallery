@@ -23,10 +23,6 @@ namespace Gallery.DAL.Repository.Implementations
 
         public void DeleteFile(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new ArgumentException("File doesn't exist");
-            }
             File.Delete(filePath);
         }
 
@@ -39,10 +35,6 @@ namespace Gallery.DAL.Repository.Implementations
 
         public Picture SaveFile(Guid userId, string tempFilePath, string extension)
         {
-            if (!File.Exists(tempFilePath))
-            {
-                throw new ArgumentException("Temporary file doesn't exist");
-            }
             var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
             var userDir = $"{_galleryConfiguration.GetStaticFilePhysicalPath()}\\{_galleryConfiguration.GetImagesSubdirectory()}\\{userId}";
             var savePath = $"{userDir}\\{fileName}{extension}";

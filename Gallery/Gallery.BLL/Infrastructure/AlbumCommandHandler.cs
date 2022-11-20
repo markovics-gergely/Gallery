@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Gallery.BLL.Exceptions;
 using Gallery.BLL.Extensions;
 using Gallery.BLL.Infrastructure.Commands;
 using Gallery.BLL.Validators.Implementations;
@@ -27,12 +28,14 @@ using System.Threading.Tasks;
 namespace Gallery.BLL.Infrastructure
 {
     public class AlbumCommandHandler :
-        IRequestHandler<EditFavoritesCommand, bool>,
-        IRequestHandler<AddPicturesToAlbumCommand, bool>,
-        IRequestHandler<CreateAlbumCommand, bool>,
-        IRequestHandler<DeleteAlbumCommand, bool>,
-        IRequestHandler<RemovePicturesFromAlbumCommand, bool>,
-        IRequestHandler<LikeAlbumCommand, bool>
+        IRequestHandler<AddFavoriteCommand, Unit>,
+        IRequestHandler<RemoveFavoriteCommand, Unit>,
+        IRequestHandler<AddPicturesToAlbumCommand, Unit>,
+        IRequestHandler<CreateAlbumCommand, Guid>,
+        IRequestHandler<DeleteAlbumCommand, Unit>,
+        IRequestHandler<RemovePicturesFromAlbumCommand, Unit>,
+        IRequestHandler<LikeAlbumCommand, Unit>,
+        IRequestHandler<EditAlbumDataCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileRepository _fileRepository;
@@ -53,23 +56,34 @@ namespace Gallery.BLL.Infrastructure
             _mapper = mapper;
         }
 
-        public async Task<bool> Handle(EditFavoritesCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddFavoriteCommand request, CancellationToken cancellationToken)
         {
             var userId = Guid.Parse(request.User.GetUserIdFromJwt());
             var user = _unitOfWork.UserRepository.Get(x => x.Id == userId, includeProperties: nameof(ApplicationUser.FavoritedAlbums)).First();
-            var favorites = _unitOfWork.AlbumRepository.Get(filter: x => request.Dto.AlbumIds.Contains(x.Id)).ToList();
-            user.FavoritedAlbums = favorites;
+            var favorite = _unitOfWork.AlbumRepository.GetByID(request.AlbumId);
+            user.FavoritedAlbums.Add(favorite);
             _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.Save();
-            return true;
+            return Unit.Value;
         }
 
-        public async Task<bool> Handle(AddPicturesToAlbumCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveFavoriteCommand request, CancellationToken cancellationToken)
+        {
+            var userId = Guid.Parse(request.User.GetUserIdFromJwt());
+            var user = _unitOfWork.UserRepository.Get(x => x.Id == userId, includeProperties: nameof(ApplicationUser.FavoritedAlbums)).First();
+            var favorite = _unitOfWork.AlbumRepository.GetByID(request.AlbumId);
+            user.FavoritedAlbums.Remove(favorite);
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.Save();
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(AddPicturesToAlbumCommand request, CancellationToken cancellationToken)
         {
             _validator = new EnumerableMaxCountValidator<IFormFile>(request.Dto.Pictures, _galleryConfiguration.GetMaxUploadCount());
             if (!_validator.Validate())
             {
-                return false;
+                throw new ValidationErrorException("Too many files provided");
             }
             var albumEntity = _unitOfWork.AlbumRepository.Get(
                 filter: x => x.Id == request.AlbumId, 
@@ -77,13 +91,13 @@ namespace Gallery.BLL.Infrastructure
                 .FirstOrDefault();
             if (albumEntity == null)
             {
-                return false;
+                throw new EntityNotFoundException("Album not found");
             }
             _validator = new AlbumOwnerValidator(albumEntity, request.User);
             var validatorResult = _validator.Validate();
             if (!validatorResult)
             {
-                return false;
+                throw new ValidationErrorException("Not authorized to add pictures");
             }
             foreach (var uploadedFile in request.Dto.Pictures)
             {
@@ -93,7 +107,7 @@ namespace Gallery.BLL.Infrastructure
                     );
                 if (!_validator.Validate())
                 {
-                    return false;
+                    throw new ValidationErrorException("There was a problem with the provided files");
                 }
             }
             IList<Picture> pictures = new List<Picture>();
@@ -113,15 +127,15 @@ namespace Gallery.BLL.Infrastructure
             albumEntity.Pictures = albumEntity.Pictures.Concat(pictures).ToList();
             _unitOfWork.AlbumRepository.Update(albumEntity);
             await _unitOfWork.Save();
-            return true;
+            return Unit.Value;
         }
 
-        public async Task<bool> Handle(CreateAlbumCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateAlbumCommand request, CancellationToken cancellationToken)
         {
             _validator = new EnumerableMaxCountValidator<IFormFile>(request.Dto.Pictures, _galleryConfiguration.GetMaxUploadCount());
             if (!_validator.Validate())
             {
-                return false;
+                throw new ValidationErrorException("Too many files provided");
             }
             var albumEntity = _mapper.Map<Album>(request.Dto);
             var userId = Guid.Parse(request.User.GetUserIdFromJwt());
@@ -134,7 +148,7 @@ namespace Gallery.BLL.Infrastructure
                     );
                 if (!_validator.Validate())
                 {
-                    return false;
+                    throw new ValidationErrorException("There was a problem with the provided files");
                 }
             }
 
@@ -155,10 +169,10 @@ namespace Gallery.BLL.Infrastructure
             albumEntity.Pictures = pictures;
             _unitOfWork.AlbumRepository.Insert(albumEntity);
             await _unitOfWork.Save();
-            return true;
+            return albumEntity.Id;
         }
 
-        public async Task<bool> Handle(DeleteAlbumCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteAlbumCommand request, CancellationToken cancellationToken)
         {
             var albumEntity = _unitOfWork.AlbumRepository.Get(
                 filter: x => x.Id == request.AlbumId, 
@@ -172,7 +186,7 @@ namespace Gallery.BLL.Infrastructure
             var validatorResult = _validator.Validate();
             if (!validatorResult)
             {
-                return false;
+                throw new ValidationErrorException("Cannot delete selected album");
             }
             _unitOfWork.AlbumRepository.Delete(albumEntity);
             foreach (var picture in albumEntity.Pictures)
@@ -180,10 +194,10 @@ namespace Gallery.BLL.Infrastructure
                 _fileRepository.DeleteFile(picture.PhysicalPath);
             }
             await _unitOfWork.Save();
-            return true;
+            return Unit.Value;
         }
 
-        public async Task<bool> Handle(RemovePicturesFromAlbumCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemovePicturesFromAlbumCommand request, CancellationToken cancellationToken)
         {
             var pictureEntities = _unitOfWork.PictureRepository.Get(
                 filter: x => request.Dto.PictureIds.Contains(x.Id), 
@@ -195,7 +209,7 @@ namespace Gallery.BLL.Infrastructure
                 var validatorResult = _validator.Validate();
                 if (!validatorResult)
                 {
-                    return false;
+                    throw new ValidationErrorException("Cannot remove pictures from this album");
                 }
             }
             foreach (var picture in pictureEntities)
@@ -204,16 +218,42 @@ namespace Gallery.BLL.Infrastructure
                 _fileRepository.DeleteFile(picture.PhysicalPath);
             }
             await _unitOfWork.Save();
-            return true;
+            return Unit.Value;
         }
 
-        public async Task<bool> Handle(LikeAlbumCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(LikeAlbumCommand request, CancellationToken cancellationToken)
         {
             var albumEntity = _unitOfWork.AlbumRepository.GetByID(request.AlbumId);
             albumEntity.LikeCount++;
             _unitOfWork.AlbumRepository.Update(albumEntity);
             await _unitOfWork.Save();
-            return true;
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(EditAlbumDataCommand request, CancellationToken cancellationToken)
+        {
+            var albumEntity = _unitOfWork.AlbumRepository.Get(filter: x => x.Id == request.AlbumId, includeProperties: nameof(Album.Creator)).FirstOrDefault();
+            if (albumEntity == null)
+            {
+                throw new EntityNotFoundException("Album not found");
+            }
+            _validator = new AlbumOwnerValidator(albumEntity, request.User);
+            if (!_validator.Validate())
+            {
+                throw new ValidationErrorException("Cannot modify this album");
+            }
+            if (request.Dto.Name != null)
+            {
+                albumEntity.Name = request.Dto.Name;
+            }
+            if (request.Dto.IsPrivate != null)
+            {
+                albumEntity.IsPrivate = request.Dto.IsPrivate.Value;
+            }
+
+            _unitOfWork.AlbumRepository.Update(albumEntity);
+            await _unitOfWork.Save();
+            return Unit.Value;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Gallery.BLL.MappingProfiles
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Pictures, opt => opt.Ignore());
 
-            CreateMap<Album, AlbumDetailsViewModel>()
+            CreateMap<Album, AlbumViewModel>()
                 .ForMember(dest => dest.IsPrivate, opt => opt.MapFrom(src => src.IsPrivate))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -34,7 +34,7 @@ namespace Gallery.BLL.MappingProfiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DisplayUrl, opt => opt.ConvertUsing<PictureDisplayUrlConverter, Picture>(src => src));
 
-            CreateMap<Album, AlbumListViewModel>()
+            CreateMap<Album, UserProfileViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.CountOfPictures, opt => opt.MapFrom(src => src.Pictures.Count))

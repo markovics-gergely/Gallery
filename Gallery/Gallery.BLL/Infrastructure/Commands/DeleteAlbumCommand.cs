@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Commands
 {
-    public class DeleteAlbumCommand : IRequest<bool>
+    public class DeleteAlbumCommand : IRequest<Unit>
     {
         public Guid AlbumId { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using Gallery.BLL.Infrastructure.ViewModels;
+﻿using Gallery.BLL.Infrastructure.DataTransferObjects;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -7,15 +7,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gallery.BLL.Infrastructure.Queries
+namespace Gallery.BLL.Infrastructure.Commands
 {
-    public class GetAlbumDetailsQuery : IRequest<AlbumViewModel>
+    public class AddFavoriteCommand : IRequest<Unit>
     {
         public Guid AlbumId { get; set; }
 
-        public ClaimsPrincipal? User { get; set; }
+        public ClaimsPrincipal User { get; set; }
 
-        public GetAlbumDetailsQuery(Guid albumId, ClaimsPrincipal? user = null)
+        public AddFavoriteCommand(Guid albumId, ClaimsPrincipal user)
         {
             AlbumId = albumId;
             User = user;

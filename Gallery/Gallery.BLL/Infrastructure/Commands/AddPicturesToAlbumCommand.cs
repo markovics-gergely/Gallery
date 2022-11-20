@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Commands
 {
-    public class AddPicturesToAlbumCommand : IRequest<bool>
+    public class AddPicturesToAlbumCommand : IRequest<Unit>
     {
         public Guid AlbumId { get; set; }
 

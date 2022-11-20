@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Commands
 {
-    public class CreateAlbumCommand : IRequest<bool>
+    public class CreateAlbumCommand : IRequest<Guid>
     {
         public CreateAlbumDTO Dto { get; set; }
 
