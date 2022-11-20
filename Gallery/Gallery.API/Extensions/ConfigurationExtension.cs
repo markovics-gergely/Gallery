@@ -1,4 +1,6 @@
 ﻿using Gallery.DAL.Configurations;
+using Gallery.DAL.Configurations.Implementations;
+using Gallery.DAL.Configurations.Interfaces;
 
 namespace Gallery.API.Extensions
 {
@@ -6,7 +8,8 @@ namespace Gallery.API.Extensions
     {
         public static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<GalleryApplication>(configuration.GetSection("GalleryApplication"));
+            services.Configure<GalleryConfiguration>(configuration.GetSection("GalleryApplication"));
+            services.AddTransient<IGalleryConfigurationService, GalleryConfigurationService>();
         }
     }
 }

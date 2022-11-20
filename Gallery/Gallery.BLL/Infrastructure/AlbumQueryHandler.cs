@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Gallery.BLL.Extensions;
 using Gallery.BLL.Infrastructure.Commands;
 using Gallery.BLL.Infrastructure.Queries;
 using Gallery.BLL.Infrastructure.ViewModels;
@@ -19,7 +20,8 @@ namespace Gallery.BLL.Infrastructure
 {
     public class AlbumQueryHandler :
         IRequestHandler<GetAlbumDetailsQuery, AlbumDetailsViewModel>,
-        IRequestHandler<GetAlbumsQuery, IEnumerable<AlbumListViewModel>>
+        IRequestHandler<GetAlbumsQuery, EnumerableWithCountViewModel<AlbumListViewModel>>,
+        IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithCountViewModel<AlbumListViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -35,7 +37,7 @@ namespace Gallery.BLL.Infrastructure
         {
             var albumEntity = _unitOfWork.AlbumRepository.Get(
                 filter: x => x.Id == request.AlbumId, 
-                includeProperties: string.Join(nameof(Album.Pictures), nameof(Album.Creator)))
+                includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator), nameof(Album.FavoritedBy)))
                 .FirstOrDefault();
             if (albumEntity == null)
             {
@@ -62,21 +64,35 @@ namespace Gallery.BLL.Infrastructure
             return Task.FromResult(albumViewModel);
         }
 
-        public Task<IEnumerable<AlbumListViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithCountViewModel<AlbumListViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Album, bool>> filter = x => !x.IsPrivate;
-            if (request.User != null)
+            if (request.UserId != null)
             {
-                var userId = Guid.Parse(request.User.Claims.First(x => x.Type == "sub").Value);
-                filter = x => !x.IsPrivate || x.Creator.Id == userId;
+                var userId = request.UserId;
+                filter = x => !x.IsPrivate && x.Creator.Id == userId;
             }
             var albumEntities = _unitOfWork.AlbumRepository.Get(
                 filter: filter,
-                orderBy: x => x.Skip((request.PageCount - 1) * request.PageSize).Take(request.PageSize).OrderByDescending(x => x.Name), 
+                orderBy: x => x.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize).OrderBy(x => x.Name), 
                 includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator))
+                ).ToList();
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumListViewModel>>(albumEntities);
+            return Task.FromResult(albumsViewModelWithCount);
+        }
+
+        public Task<EnumerableWithCountViewModel<AlbumListViewModel>> Handle(GetUserFavoriteAlbumsQuery request, CancellationToken cancellationToken)
+        {
+            var userId = Guid.Parse(request.User.GetUserIdFromJwt());
+            var albumEntities = _unitOfWork.UserRepository.Get(
+                filter: x => x.Id == userId,
+                includeProperties: string.Join(',', nameof(ApplicationUser.FavoritedAlbums), "FavoritedAlbums.Pictures")
+                ).First();
+
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumListViewModel>>(
+                albumEntities.FavoritedAlbums.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize)
                 );
-            var albumsViewModel = _mapper.Map<IEnumerable<AlbumListViewModel>>(albumEntities);
-            return Task.FromResult(albumsViewModel);
+            return Task.FromResult(albumsViewModelWithCount);
         }
     }
 }

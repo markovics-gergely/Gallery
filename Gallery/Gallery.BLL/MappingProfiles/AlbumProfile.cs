@@ -26,15 +26,19 @@ namespace Gallery.BLL.MappingProfiles
                 .ForMember(dest => dest.IsPrivate, opt => opt.MapFrom(src => src.IsPrivate))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount + src.FavoritedBy.Count))
-                .ForMember(dest => dest.PictureUrls, opt => opt.ConvertUsing<DisplayUrlListConverter, Album>(src => src))
+                .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                .ForMember(dest => dest.Pictures, opt => opt.MapFrom(src => src.Pictures))
                 .ForMember(dest => dest.IsFavorite, opt => opt.ConvertUsing<FavoriteConverter, Album>(src => src));
+
+            CreateMap<Picture, PictureViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DisplayUrl, opt => opt.ConvertUsing<PictureDisplayUrlConverter, Picture>(src => src));
 
             CreateMap<Album, AlbumListViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.CountOfPictures, opt => opt.MapFrom(src => src.Pictures.Count))
-                .ForMember(dest => dest.CoverUrl, opt => opt.ConvertUsing<DisplayUrlConverter, Album>(src => src));
+                .ForMember(dest => dest.CoverUrl, opt => opt.ConvertUsing<AlbumDisplayUrlConverter, Album>(src => src));
         }
     }
 }

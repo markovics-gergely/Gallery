@@ -18,6 +18,8 @@ namespace Gallery.BLL.Infrastructure.ViewModels
 
         public int LikeCount { get; set; }
 
-        public IEnumerable<string> PictureUrls { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<PictureViewModel> Pictures { get; set; } = Enumerable.Empty<PictureViewModel>();
+
+        public UserNameViewModel Creator { get; set; } = new UserNameViewModel();
     }
 }

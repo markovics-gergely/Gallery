@@ -1,4 +1,5 @@
 ﻿using Gallery.DAL.Configurations;
+using Gallery.DAL.Configurations.Interfaces;
 using Gallery.DAL.Domain;
 using Gallery.DAL.Repository.Interfaces;
 using Microsoft.Extensions.Options;
@@ -13,11 +14,11 @@ namespace Gallery.DAL.Repository.Implementations
 {
     public class FileRepository : IFileRepository
     {
-        private readonly GalleryApplication _galleryConfiguration;
+        private readonly IGalleryConfigurationService _galleryConfiguration;
 
-        public FileRepository(IOptions<GalleryApplication> galleryConfiguration)
+        public FileRepository(IGalleryConfigurationService galleryConfiguration)
         {
-            _galleryConfiguration = galleryConfiguration.Value;
+            _galleryConfiguration = galleryConfiguration;
         }
 
         public void DeleteFile(string filePath)
@@ -40,10 +41,10 @@ namespace Gallery.DAL.Repository.Implementations
         {
             if (!File.Exists(tempFilePath))
             {
-                throw new ArgumentException("File doesn't exist");
+                throw new ArgumentException("Temporary file doesn't exist");
             }
             var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
-            var userDir = $"{_galleryConfiguration.StaticFilePath}\\{userId}";
+            var userDir = $"{_galleryConfiguration.GetStaticFilePhysicalPath()}\\{_galleryConfiguration.GetImagesSubdirectory()}\\{userId}";
             var savePath = $"{userDir}\\{fileName}{extension}";
             if (!Directory.Exists(userDir))
             {
@@ -56,7 +57,8 @@ namespace Gallery.DAL.Repository.Implementations
             {
                 DisplayPath = $"/{userId}/{fileName}{extension}",
                 PhysicalPath = savePath,
-                Size = attributes.Length / Math.Pow(1024, 2)
+                Size = attributes.Length / Math.Pow(1024, 2),
+                FileExtension = extension
             };
         }
     }

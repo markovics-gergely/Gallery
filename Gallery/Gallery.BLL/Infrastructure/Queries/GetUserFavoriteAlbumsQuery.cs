@@ -10,17 +10,14 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Queries
 {
-    public class GetAlbumsQuery : IRequest<EnumerableWithCountViewModel<AlbumListViewModel>>
+    public class GetUserFavoriteAlbumsQuery : IRequest<EnumerableWithCountViewModel<AlbumListViewModel>>
     {
         public GetAlbumsDTO Dto { get; set; }
 
-        public ClaimsPrincipal? User { get; set; }
+        public ClaimsPrincipal User { get; set; }
 
-        public Guid? UserId { get; set; }
-
-        public GetAlbumsQuery(GetAlbumsDTO dto, ClaimsPrincipal? user = null, Guid? userId = null)
+        public GetUserFavoriteAlbumsQuery(GetAlbumsDTO dto, ClaimsPrincipal user)
         {
-            UserId = userId;
             Dto = dto;
             User = user;
         }

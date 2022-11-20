@@ -1,14 +1,19 @@
 ﻿using AutoMapper;
+using Gallery.BLL.Extensions;
 using Gallery.BLL.Infrastructure.Commands;
 using Gallery.BLL.Validators.Implementations;
 using Gallery.BLL.Validators.Interfaces;
+using Gallery.DAL.Configurations;
+using Gallery.DAL.Configurations.Interfaces;
 using Gallery.DAL.Domain;
 using Gallery.DAL.Repository.Interfaces;
 using Gallery.DAL.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +36,26 @@ namespace Gallery.BLL.Infrastructure
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileRepository _fileRepository;
+        private readonly IGalleryConfigurationService _galleryConfiguration;
         private readonly IMapper _mapper;
         private IValidator? _validator;
 
         public AlbumCommandHandler(
             IUnitOfWork unitOfWork, 
             IFileRepository fileRepository,
+            IGalleryConfigurationService galleryConfiguration,
             IMapper mapper
             )
         {
             _unitOfWork = unitOfWork;
             _fileRepository = fileRepository;
+            _galleryConfiguration = galleryConfiguration;
             _mapper = mapper;
         }
 
         public async Task<bool> Handle(EditFavoritesCommand request, CancellationToken cancellationToken)
         {
-            var userId = Guid.Parse(request.User.Claims.First(x => x.Type == "sub").Value);
+            var userId = Guid.Parse(request.User.GetUserIdFromJwt());
             var user = _unitOfWork.UserRepository.Get(x => x.Id == userId, includeProperties: nameof(ApplicationUser.FavoritedAlbums)).First();
             var favorites = _unitOfWork.AlbumRepository.Get(filter: x => request.Dto.AlbumIds.Contains(x.Id)).ToList();
             user.FavoritedAlbums = favorites;
@@ -58,7 +66,15 @@ namespace Gallery.BLL.Infrastructure
 
         public async Task<bool> Handle(AddPicturesToAlbumCommand request, CancellationToken cancellationToken)
         {
-            var albumEntity = _unitOfWork.AlbumRepository.Get(filter: x => x.Id == request.AlbumId, includeProperties: nameof(Album.Pictures)).FirstOrDefault();
+            _validator = new EnumerableMaxCountValidator<IFormFile>(request.Dto.Pictures, _galleryConfiguration.GetMaxUploadCount());
+            if (!_validator.Validate())
+            {
+                return false;
+            }
+            var albumEntity = _unitOfWork.AlbumRepository.Get(
+                filter: x => x.Id == request.AlbumId, 
+                includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator)))
+                .FirstOrDefault();
             if (albumEntity == null)
             {
                 return false;
@@ -69,7 +85,32 @@ namespace Gallery.BLL.Infrastructure
             {
                 return false;
             }
-            albumEntity.Pictures.Add(new Picture());
+            foreach (var uploadedFile in request.Dto.Pictures)
+            {
+                _validator = new AndCondition(
+                    new FileSizeValidator(uploadedFile, _galleryConfiguration.GetMaxUploadSize()),
+                    new FileHeaderValidator(uploadedFile)
+                    );
+                if (!_validator.Validate())
+                {
+                    return false;
+                }
+            }
+            IList<Picture> pictures = new List<Picture>();
+            var userId = Guid.Parse(request.User.GetUserIdFromJwt());
+            foreach (var uploadedFile in request.Dto.Pictures)
+            {
+                var filePath = Path.GetTempFileName();
+                var sanitizedFilename = _fileRepository.SanitizeFilename(uploadedFile.FileName);
+                var extension = Path.GetExtension(sanitizedFilename);
+                using (var stream = File.Create(filePath))
+                {
+                    await uploadedFile.CopyToAsync(stream);
+                }
+                var savedPicture = _fileRepository.SaveFile(userId, filePath, extension);
+                pictures.Add(savedPicture);
+            }
+            albumEntity.Pictures = albumEntity.Pictures.Concat(pictures).ToList();
             _unitOfWork.AlbumRepository.Update(albumEntity);
             await _unitOfWork.Save();
             return true;
@@ -77,25 +118,38 @@ namespace Gallery.BLL.Infrastructure
 
         public async Task<bool> Handle(CreateAlbumCommand request, CancellationToken cancellationToken)
         {
+            _validator = new EnumerableMaxCountValidator<IFormFile>(request.Dto.Pictures, _galleryConfiguration.GetMaxUploadCount());
+            if (!_validator.Validate())
+            {
+                return false;
+            }
             var albumEntity = _mapper.Map<Album>(request.Dto);
-            var userId = Guid.Parse(request.User.Claims.First(c => c.Type == "sub").Value);
+            var userId = Guid.Parse(request.User.GetUserIdFromJwt());
             var user = _unitOfWork.UserRepository.GetByID(userId);
-            IList<Picture> pictures = new List<Picture>();
             foreach(var uploadedFile in request.Dto.Pictures)
             {
-                if (uploadedFile.Length > 0)
+                _validator = new AndCondition( 
+                    new FileSizeValidator(uploadedFile, _galleryConfiguration.GetMaxUploadSize()),
+                    new FileHeaderValidator(uploadedFile)
+                    );
+                if (!_validator.Validate())
                 {
-                    var filePath = Path.GetTempFileName();
-                    var sanitizedFilename = _fileRepository.SanitizeFilename(uploadedFile.FileName);
-                    var extension = Path.GetExtension(sanitizedFilename);
-                    using (var stream = File.Create(filePath))
-                    {
-                        await uploadedFile.CopyToAsync(stream);
-                    }
-                    var savedPicture = _fileRepository.SaveFile(userId, filePath, extension);
-                    pictures.Add(savedPicture);
+                    return false;
                 }
-                
+            }
+
+            IList<Picture> pictures = new List<Picture>();
+            foreach (var uploadedFile in request.Dto.Pictures)
+            {
+                var filePath = Path.GetTempFileName();
+                var sanitizedFilename = _fileRepository.SanitizeFilename(uploadedFile.FileName);
+                var extension = Path.GetExtension(sanitizedFilename);
+                using (var stream = File.Create(filePath))
+                {
+                    await uploadedFile.CopyToAsync(stream);
+                }
+                var savedPicture = _fileRepository.SaveFile(userId, filePath, extension);
+                pictures.Add(savedPicture);
             }
             albumEntity.Creator = user;
             albumEntity.Pictures = pictures;
@@ -131,7 +185,10 @@ namespace Gallery.BLL.Infrastructure
 
         public async Task<bool> Handle(RemovePicturesFromAlbumCommand request, CancellationToken cancellationToken)
         {
-            var pictureEntities = _unitOfWork.PictureRepository.Get(filter: x => request.Dto.PictureIds.Contains(x.Id), includeProperties: nameof(Picture.Album));
+            var pictureEntities = _unitOfWork.PictureRepository.Get(
+                filter: x => request.Dto.PictureIds.Contains(x.Id), 
+                includeProperties: $"{nameof(Picture.Album)}.{nameof(Album.Creator)}"
+                );
             foreach (var picture in pictureEntities)
             {
                 _validator = new AlbumOwnerValidator(picture.Album, request.User);

@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace Gallery.DAL.Configurations
 {
-    public class GalleryApplication
+    public class GalleryConfiguration
     {
-        public int MaxUploadSize { get; set; }
+        public int MaxUploadSize { get; set; } = 25;
 
-        public int MaxUploadCount { get; set; }
+        public int MaxUploadCount { get; set; } = 5;
 
         public string StaticFilePath { get; set; } = string.Empty;
-
-        public IEnumerable<string> AcceptedExtensions { get; set; } = Enumerable.Empty<string>();
     }
 }
