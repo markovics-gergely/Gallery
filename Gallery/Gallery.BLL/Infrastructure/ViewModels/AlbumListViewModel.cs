@@ -15,5 +15,7 @@ namespace Gallery.BLL.Infrastructure.ViewModels
         public int CountOfPictures { get; set; }
 
         public string CoverUrl { get; set; } = string.Empty;
+
+        public UserNameViewModel Creator { get; set; } = new UserNameViewModel();
     }
 }

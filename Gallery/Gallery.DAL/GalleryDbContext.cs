@@ -51,11 +51,10 @@ namespace Gallery.DAL
                 .HasMany(e => e.FavoritedAlbums)
                 .WithMany(e => e.FavoritedBy)
                 .UsingEntity<Dictionary<string, object>>(
-                    "LikedAlbums",
+                    "FavoriteAlbums",
                     j => j
                         .HasOne<Album>()
-                        .WithMany()
-                        .OnDelete(DeleteBehavior.NoAction),
+                        .WithMany(),
                     j => j
                         .HasOne<ApplicationUser>()
                         .WithMany()

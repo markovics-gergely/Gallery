@@ -1,4 +1,5 @@
-﻿using Gallery.BLL.Validators.Interfaces;
+﻿using Gallery.BLL.Extensions;
+using Gallery.BLL.Validators.Interfaces;
 using Gallery.DAL.Domain;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Gallery.BLL.Validators.Implementations
 
         public bool Validate()
         {
-            var userId = Guid.Parse(user.Claims.First(x => x.Type == "sub").Value);
+            var userId = Guid.Parse(user.GetUserIdFromJwt());
             return userId == album.Creator.Id;
         }
     }

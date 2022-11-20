@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Gallery.BLL.Extensions;
 using Gallery.DAL.Domain;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -20,11 +21,11 @@ namespace Gallery.BLL.ValueResolvers
 
         public bool Convert(Album sourceMember, ResolutionContext context)
         {
-            if (_httpContextAccessor.HttpContext.User.Identity?.IsAuthenticated ?? true)
+            if (!_httpContextAccessor.HttpContext.User.Identity?.IsAuthenticated ?? true)
             {
                 return false;
             }
-            var userId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == "sub").Value);
+            var userId = Guid.Parse(_httpContextAccessor.HttpContext.User.GetUserIdFromJwt());
             return sourceMember.FavoritedBy.Select(x => x.Id).Contains(userId);
         }
     }

@@ -1,6 +1,7 @@
 using Gallery.API.Extensions;
 using Gallery.DAL;
 using Gallery.DAL.Configurations;
+using Gallery.DAL.Configurations.Interfaces;
 using Gallery.DAL.Domain;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
@@ -66,22 +67,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var staticFilePath = app.Configuration.GetSection("GalleryApplication:StaticFilePath").Get<string>();
-if (string.IsNullOrEmpty(staticFilePath))
+var configService = app.Services.GetRequiredService<IGalleryConfigurationService>(); 
+app.UseStaticFiles(new StaticFileOptions
 {
-    app.UseStaticFiles();
-}
-else
-{
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(staticFilePath),
-        RequestPath = "/images"
-    });
-}
+    FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),
+    RequestPath = $"/{configService.GetStaticFileRequestPath()}"
+});
+
 app.UseRouting();
 app.UseCors("CorsPolicy");
-app.Use(async (context, next) => await AuthenticationExtension.AuthQueryStringToHeader(context, next));
 app.UseIdentityServer();
 app.UseAuthorization();
 

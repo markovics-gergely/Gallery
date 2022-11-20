@@ -7,8 +7,6 @@ using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gallery.API.Controllers
 {
@@ -27,23 +25,40 @@ namespace Gallery.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<AlbumListViewModel>>> GetAlbums([FromQuery] GetAlbumsDTO dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumListViewModel>>> GetAlbums(
+            [FromQuery] GetAlbumsDTO dto, 
+            CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
-            var query = new GetAlbumsQuery(dto.PageCount, dto.PageSize, user);
+            var query = new GetAlbumsQuery(dto, user);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<AlbumListViewModel>>> GetUserAlbums([FromRoute] Guid userId, [FromQuery] GetAlbumsDTO dto, CancellationToken cancellationToken)
+        [HttpGet("user/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumListViewModel>>> GetUserAlbums(
+            [FromRoute] Guid userId, 
+            [FromQuery] GetAlbumsDTO dto, 
+            CancellationToken cancellationToken)
         {
-            var query = new GetAlbumsQuery(dto.PageCount, dto.PageSize, HttpContext.User, userId);
+            var query = new GetAlbumsQuery(dto, HttpContext.User, userId);
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
+
+        [HttpGet("favorites")]
+        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumListViewModel>>> GetUserFavoriteAlbums(
+            [FromQuery] GetAlbumsDTO dto,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetUserFavoriteAlbumsQuery(dto, HttpContext.User);
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 
         [HttpGet("{albumId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<AlbumDetailsViewModel>> GetAlbumDetails([FromRoute] Guid albumId, CancellationToken cancellationToken)
+        public async Task<ActionResult<AlbumDetailsViewModel>> GetAlbumDetails(
+            [FromRoute] Guid albumId, 
+            CancellationToken cancellationToken)
         {
             var user = HttpContext.User.IsAuthenticated() ? HttpContext.User : null;
             var query = new GetAlbumDetailsQuery(albumId, user);
@@ -66,14 +81,20 @@ namespace Gallery.API.Controllers
         }
 
         [HttpPut("{albumId}/pictures/add")]
-        public async Task<IActionResult> UploadAlbumPictures([FromRoute] Guid albumId, [FromBody] AddAlbumPicturesDTO dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UploadAlbumPictures(
+            [FromRoute] Guid albumId, 
+            [FromForm] AddAlbumPicturesDTO dto, 
+            CancellationToken cancellationToken)
         {
             var command = new AddPicturesToAlbumCommand(albumId, dto, HttpContext.User);
             return Ok(await _mediator.Send(command, cancellationToken));
         }
 
         [HttpPut("{albumId}/pictures/remove")]
-        public async Task<IActionResult> RemoveAlbumPictures([FromRoute] Guid albumId, [FromBody] RemoveAlbumPicturesDTO dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveAlbumPictures(
+            [FromRoute] Guid albumId, 
+            [FromBody] RemoveAlbumPicturesDTO dto, 
+            CancellationToken cancellationToken)
         {
             var command = new RemovePicturesFromAlbumCommand(albumId, dto, HttpContext.User);
             return Ok(await _mediator.Send(command, cancellationToken));
