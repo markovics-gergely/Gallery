@@ -134,33 +134,6 @@ button {
                 height: 300px;
             }
         }
-        /*.image-sub-container {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            border-color: var(--secondary-color);
-            border-width: 1px;
-            border-style: solid;
-
-            .img-back {
-              position: absolute;
-              top: 0;
-              left: 0;
-              z-index: 1;
-              object-fit: fill;
-              width: 100px;
-              height: 100px;
-              filter: blur(4px);
-            }
-        
-            img {
-              position: relative;
-              z-index: 2;
-              object-fit: contain;
-              width: 100px;
-              height: 100px;
-            }
-        */
     }
 }
 

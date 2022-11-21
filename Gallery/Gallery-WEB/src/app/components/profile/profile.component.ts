@@ -5,6 +5,7 @@ import { AlbumService } from 'src/app/services/album.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -28,7 +29,7 @@ export class ProfileComponent implements OnInit {
     this.loadingService.isLoading = true;
     this.userService.getProfile().subscribe(data => {
       this._profileData = data;
-      this.albumService.getProfileAlbums(10, 1).subscribe(albums => {
+      this.albumService.getProfileAlbums(environment.default_page_size, environment.default_page).subscribe(albums => {
         this._albums = albums.values;
         this._total = albums.total;
         this.loadingService.isLoading = false;

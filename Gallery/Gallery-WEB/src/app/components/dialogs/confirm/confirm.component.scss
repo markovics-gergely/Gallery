@@ -69,10 +69,19 @@
         &:focus {
             box-shadow: 0;
             outline: none !important;
-            border: 1px solid var(--primary-color);
+            border: none;
         }
         i {
             transform: translateY(3px);
+        }
+        &.cancel {
+            background-color: var(--warning-color);
+            color: var(--secondary-color);
+        }
+
+        &.ok {
+            background-color: var(--ok-color);
+            color: var(--secondary-color);
         }
     }
 }

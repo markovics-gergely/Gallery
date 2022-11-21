@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlbumViewModel, PagerModel } from 'models';
+import { AddAlbumPicturesDTO, AlbumViewModel, PagerModel } from 'models';
 import { AlbumService } from 'src/app/services/album.service';
 import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { environment } from 'src/environments/environment';
 import { AlbumDialogComponent } from '../dialogs/album-dialog/album-dialog.component';
 
 @Component({
@@ -34,7 +35,7 @@ export class MyGalleriesComponent implements OnInit {
           this._gallery = album;
         });
       } else {
-        this.albumService.getAlbums(10, 1, undefined).subscribe(albums => {
+        this.albumService.getAlbums(environment.default_page_size, environment.default_page, undefined).subscribe(albums => {
           this._galleries = albums.values;
           this._total = albums.total;
         });
@@ -72,7 +73,6 @@ export class MyGalleriesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.loadingService.isLoading = true;
-      console.log(result);
       this.albumService.createAlbum(result).subscribe(resp => {
         this.router.navigate(['mygalleries', resp]);
       }).add(() => this.loadingService.isLoading = false);
@@ -98,12 +98,23 @@ export class MyGalleriesComponent implements OnInit {
 
   deleteGallery(g: AlbumViewModel | undefined, event: Event) {
     event.stopImmediatePropagation();
-    this.confirmAlbumService.deleteGallery(g).add(() => this.backToList());
+    this.confirmAlbumService.deleteGallery(g).add(() => {
+      this._galleries = this._galleries?.filter(gallery => gallery.id !== g?.id);
+      this.backToList();
+    });
+  }
+
+  addPictures(event: Event) {
+    const files = (event.target as HTMLInputElement)?.files;
+    if (files) {
+      const dto: AddAlbumPicturesDTO = { pictures: Array.from(files) };
+      this.confirmAlbumService.addPictures(this._gallery?.id || '', dto);
+    }
   }
 
   getImgClass(count: number) {
-    if (count >=4) return 'sub-9';
-    if (count >= 1) return 'sub-4';
+    if (count > 4) return 'sub-9';
+    if (count > 1) return 'sub-4';
     return 'sub-1';
   }
 

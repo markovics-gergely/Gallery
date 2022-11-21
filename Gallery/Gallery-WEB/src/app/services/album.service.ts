@@ -46,6 +46,20 @@ export class AlbumService {
   }
   
   /**
+   * Send get request for albums for the browse page
+   * @returns List of album data for browse page
+   */
+   public getBrowsableAlbums(pageSize: number, pageCount: number): Observable<PagerList<AlbumViewModel>> {
+    return this.http.get<PagerList<AlbumViewModel>>(
+      this._baseUrl,
+      { params: new HttpParams()
+        .set('PageSize', pageSize)
+        .set('PageCount', pageCount)
+      }
+    );
+  }
+  
+  /**
    * Send get request for album details
    * @returns Album with detailed informations
    */
@@ -98,7 +112,7 @@ export class AlbumService {
    * @returns
    */
   public addPictures(id: string, dto: AddAlbumPicturesDTO): Observable<any> {
-    return this.http.put(`${this._baseUrl}/${id}/pictures/add`, dto);
+    return this.http.put(`${this._baseUrl}/${id}/pictures/add`, this.getFormData(dto));
   }
 
   /**
@@ -136,7 +150,13 @@ export class AlbumService {
    */
   private getFormData(obj: any): FormData {
     return Object.keys(obj).reduce((formData, key) => {
-      formData.append(key, obj[key]);
+      if (key === 'pictures') {
+        (obj[key] as File[]).forEach(file => {
+          formData.append(key, file);
+        });
+      } else {
+        formData.append(key, obj[key]);
+      }
       return formData;
     }, new FormData());
   }

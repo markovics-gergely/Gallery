@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PagerModel } from 'models';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pager',
@@ -14,9 +15,9 @@ export class PagerComponent implements OnInit {
   /** Possible page sizes to choose from */
   private _pageSizes: number[] = [1, 5, 10, 20, 50, 100];
   /** Active page */
-  private _page: number = 0;
+  private _page: number = environment.default_page - 1;
   /** Selected page size */
-  private _pageSize: number = 10;
+  private _pageSize: number = environment.default_page_size;
 
   constructor() {
     this.emitChange();

@@ -37,9 +37,11 @@
         <input
           #upload
           type="file"
+          multiple
           class="dialog-input"
           tabindex="1"
           (change)="addPicture($event)"
+          accept="image/png, image/jpg, image/jpeg"
           style="display: none"
         />
       </button>

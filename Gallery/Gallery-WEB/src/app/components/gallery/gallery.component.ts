@@ -13,6 +13,7 @@ import { UserService } from 'src/app/services/user.service';
 export class GalleryComponent implements OnInit {
   private _pager: PagerModel | undefined;
   @Input() public gallery: AlbumViewModel | undefined;
+  @Input() public needsCreator: boolean = false;
 
   constructor(
     private route: ActivatedRoute,

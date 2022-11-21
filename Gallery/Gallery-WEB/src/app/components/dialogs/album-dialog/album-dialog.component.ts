@@ -39,16 +39,17 @@ export class AlbumDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  addPicture(event: any) {
-    const file = event.target.files[0];
-    console.log(file);
-    console.log(this._form?.get('pictures')?.value);
-    
-    (this._form?.get('pictures') as FormArray).push(
-      new FormGroup({
-        file: new FormControl(file, Validators.required)
-      })
-    );
+  addPicture(event: Event) {
+    const files = (event.target as HTMLInputElement)?.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        (this._form?.get('pictures') as FormArray).push(
+          new FormGroup({
+            file: new FormControl(file, Validators.required)
+          })
+        );
+      });
+    }
   }
 
   getFilename(index: number): string {

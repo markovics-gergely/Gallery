@@ -29,6 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfirmComponent } from './components/dialogs/confirm/confirm.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { UserBrowseComponent } from './components/user-browse/user-browse.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     PreviewComponent,
     ProfileDialogComponent,
     AlbumDialogComponent,
-    ConfirmComponent
+    ConfirmComponent,
+    UserBrowseComponent
   ],
   imports: [
     BrowserModule,
