@@ -31,7 +31,6 @@ export class AlbumDialogComponent implements OnInit {
       isPrivate: this._form?.get('isPrivate')?.value,
       pictures: this._form?.get('pictures')?.value.map((f: { file: File; }) => f.file)
     };
-    console.log(dto);
     this.dialogRef.close(dto);
   }
 

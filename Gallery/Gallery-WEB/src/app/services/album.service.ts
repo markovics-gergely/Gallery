@@ -44,6 +44,21 @@ export class AlbumService {
       }
     );
   }
+
+  /**
+   * Send get request for albums for the favorite page
+   * @returns List of album data for favorite page
+   */
+  public getFavoriteAlbums(pageSize: number, pageCount: number): Observable<PagerList<AlbumViewModel>> {
+    return this.http.get<PagerList<AlbumViewModel>>(
+      `${this._baseUrl}/favorites`,
+      {
+        params: new HttpParams()
+          .set('PageSize', pageSize)
+          .set('PageCount', pageCount)
+      }
+    );
+  }
   
   /**
    * Send get request for albums for the browse page

@@ -94,4 +94,13 @@ export class UserService {
   public getFullProfile(): Observable<FullProfileViewModel> {
     return this.client.get<FullProfileViewModel>(`${this.baseUrl}/full-profile`);
   }
+
+  /**
+   * Get detailed profile data of the user for the profile editor modal
+   * @param id identity of the user
+   * @returns Detailed profile data of the user
+   */
+  public getUserProfile(id: string): Observable<FullProfileViewModel> {
+    return this.client.get<FullProfileViewModel>(`${this.baseUrl}/simple/${id}`);
+  }
 }

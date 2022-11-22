@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlbumViewModel, PagerModel } from 'models';
 import { AlbumService } from 'src/app/services/album.service';
 import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -23,10 +23,10 @@ export class BrowseComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loadingService: LoadingService,
-    private dialog: MatDialog,
     private albumService: AlbumService,
     private confirmAlbumService: ConfirmAlbumService,
-    private userService: UserService
+    private userService: UserService,
+    private snackService: SnackService
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class BrowseComponent implements OnInit {
         });
       }
       this.loadingService.isLoading = false;
-    })
+    });
   }
 
   /**
@@ -74,7 +74,13 @@ export class BrowseComponent implements OnInit {
 
   addOrRemoveFavorite(g: AlbumViewModel | undefined, event: Event) {
     event.stopImmediatePropagation();
-    this.confirmAlbumService.addOrRemoveFavorite(g);
+    this.confirmAlbumService.addOrRemoveFavorite(g)
+      .add(() => {
+        this.loadingService.isLoading = false;
+        if (!g?.isFavorite) {
+          this.snackService.openSnackBar('Removed from favorites!', 'OK');
+        }
+      });
   }
 
   likeGallery(g: AlbumViewModel | undefined, event: Event) {

@@ -18,7 +18,7 @@ export class ConfirmAlbumService {
 
   addOrRemoveFavorite(gallery: AlbumViewModel | undefined) {
     if (gallery?.isFavorite) {
-      this.confirmService
+      return this.confirmService
         .confirm(
           'Add to favorite',
           `Are you sure you want to remove ${gallery?.name} from your favorites?`
@@ -31,30 +31,23 @@ export class ConfirmAlbumService {
               .subscribe((_) => {
                 gallery.isFavorite = false;
                 gallery.likeCount!--;
-              })
-              .add(() => {
-                this.loadingService.isLoading = false;
-                this.snackService.openSnackBar('Removed from favorites!', 'OK');
               });
           }
         });
     } else {
       this.loadingService.isLoading = true;
-      this.albumService
+      return this.albumService
         .addToFavorites(gallery?.id || '')
         .subscribe((_) => {
           gallery!.isFavorite = true;
           gallery!.likeCount!++;
           this.snackService.openSnackBar('Added to favorites!', 'OK');
-        })
-        .add(() => {
-          this.loadingService.isLoading = false;
         });
     }
   }
 
   setPublicStatus(gallery: AlbumViewModel | undefined) {
-    this.confirmService
+    return this.confirmService
       .confirm(
         'Change album privacy',
         `Are you sure you want to set the gallery ${

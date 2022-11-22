@@ -8,52 +8,24 @@
         </button>
       </div>
       <div class="buttons" *ngIf="gallery">
-        <button
-          mat-button
-          matTooltip="Back to galleries"
-          (click)="backToList()"
-        >
+        <button mat-button matTooltip="Back to galleries" (click)="backToList()">
           <i class="bx bx-arrow-back bx-tada-hover"></i>
         </button>
-        <button
-          mat-button
-          [matTooltip]="gallery.isFavorite ? 'Unfavorite' : 'Favorite'"
-          (click)="addOrRemoveFavorite(gallery, $event)"
-        >
-          <i
-            class="bx bx-tada-hover"
-            [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"
-          ></i>
+        <button mat-button [matTooltip]="gallery.isFavorite ? 'Unfavorite' : 'Favorite'"
+          (click)="addOrRemoveFavorite(gallery, $event)">
+          <i class="bx bx-tada-hover" [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
         </button>
-        <button
-          mat-button
-          [matTooltip]="gallery.isPrivate ? 'Set public' : 'Set private'"
-          (click)="setPublicStatus(gallery, $event)"
-        >
-          <i
-            class="bx bx-tada-hover"
-            [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"
-          ></i>
+        <button mat-button [matTooltip]="gallery.isPrivate ? 'Set public' : 'Set private'"
+          (click)="setPublicStatus(gallery, $event)">
+          <i class="bx bx-tada-hover" [ngClass]="gallery.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
         </button>
-        <button
-          mat-button
-          matTooltip="Delete gallery"
-          (click)="deleteGallery(gallery, $event)"
-        >
+        <button mat-button matTooltip="Delete gallery" (click)="deleteGallery(gallery, $event)">
           <i class="bx bx-trash bx-tada-hover"></i>
         </button>
-        <button mat-button matTooltip="Add picture"
-            (click)="addPics.click()">
+        <button mat-button matTooltip="Add pictures" (click)="addPics.click()">
           <i class="bx bx-plus bx-tada-hover"></i>
-          <input
-            #addPics
-            type="file"
-            multiple
-            tabindex="1"
-            accept="image/png, image/jpg, image/jpeg"
-            (change)="addPictures($event)"
-            style="display: none"
-          />
+          <input #addPics type="file" multiple tabindex="1" accept="image/png, image/jpg, image/jpeg"
+            (change)="addPictures($event)" style="display: none" />
         </button>
       </div>
       <div class="title" style="margin-left: 10px" *ngIf="gallery">
@@ -61,22 +33,11 @@
       </div>
     </div>
     <div *ngIf="galleries && !gallery" class="gallery-list">
-      <div
-        class="gallery"
-        (click)="selectGallery(g.id || '')"
-        *ngFor="let g of galleries"
-      >
+      <div class="gallery" (click)="selectGallery(g.id || '')" *ngFor="let g of galleries">
         <div class="image-container" [ngClass]="g.pictures?.length ? '' : 'ph'">
-          <div
-            *ngFor="let url of g.pictures"
-            class="image-sub-container"
-            [ngClass]="getImgClass(g.pictures?.length || 0)"
-          >
-            <img
-              class="img-back"
-              [src]="url.displayUrl || placeholderImage"
-              alt="cover"
-            />
+          <div *ngFor="let url of g.pictures" class="image-sub-container"
+            [ngClass]="getImgClass(g.pictures?.length || 0)">
+            <img class="img-back" [src]="url.displayUrl || placeholderImage" alt="cover" />
             <img [src]="url.displayUrl || placeholderImage" alt="cover" />
           </div>
         </div>
@@ -115,29 +76,22 @@
           </div>
           <div class="card-item bottom-buttons">
             <div class="button-list">
-              <button mat-button (click)="deleteGallery(g, $event)">
+              <button mat-button matTooltip="Delete gallery" (click)="deleteGallery(g, $event)">
                 <i class="bx bx-trash bx-tada-hover"></i>
               </button>
-              <button mat-button (click)="addOrRemoveFavorite(g, $event)">
-                <i
-                  class="bx bx-tada-hover"
-                  [ngClass]="g.isFavorite ? 'bx-star' : 'bxs-star'"
-                ></i>
+              <button mat-button (click)="addOrRemoveFavorite(g, $event)"
+                [matTooltip]="g.isFavorite ? 'Set unfavorite' : 'Set favorite'">
+                <i class="bx bx-tada-hover" [ngClass]="g.isFavorite ? 'bx-star' : 'bxs-star'"></i>
               </button>
-              <button mat-button (click)="setPublicStatus(g, $event)">
-                <i
-                  class="bx bx-tada-hover"
-                  [ngClass]="g.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"
-                ></i>
+              <button mat-button (click)="setPublicStatus(g, $event)"
+                [matTooltip]="g.isPrivate ? 'Set public' : 'Set private'">
+                <i class="bx bx-tada-hover" [ngClass]="g.isPrivate ? 'bx-lock-open-alt' : 'bx-lock-alt'"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <app-pager
-        [itemCount]="total"
-        (changeEvent)="setPage($event)"
-      ></app-pager>
+      <app-pager [itemCount]="total" (changeEvent)="setPage($event)"></app-pager>
     </div>
     <app-gallery [gallery]="gallery" *ngIf="gallery"></app-gallery>
   </div>

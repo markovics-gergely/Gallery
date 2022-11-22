@@ -1,1 +1,116 @@
-<p>user-browse works!</p>
+<div class="container">
+  <div class="main-container">
+    <div class="title-line">
+      <div class="buttons" *ngIf="gallery">
+        <button mat-button matTooltip="Back to galleries" (click)="backToList()">
+          <i class='bx bx-arrow-to-left bx-tada-hover'></i>
+        </button>
+        <button mat-button matTooltip="Back to user galleries" (click)="backToList()">
+          <i class='bx bx-arrow-back bx-tada-hover'></i>
+        </button>
+        <button *ngIf="!userId" mat-button matTooltip="Like gallery" (click)="likeGallery(gallery, $event)"
+          [disabled]="!canLike">
+          <i class='bx bx-heart' [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"></i>
+        </button>
+        <button *ngIf="userId" mat-button [matTooltip]="gallery.isFavorite ? 'Set unfavorite' : 'Set favorite'"
+          (click)="addOrRemoveFavorite(gallery, $event)">
+          <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
+        </button>
+      </div>
+      <div class="title" style="margin-left: 10px;" *ngIf="gallery">Galleries of {{gallery.creator?.userName}}</div>
+    </div>
+    <div class="card" *ngIf="profileData" style="margin: 0;">
+      <div class="card-item" style="align-items: center;">
+        <div class="main-title">Profile</div>
+      </div>
+      <div class="card-item">
+        <div class="title">
+          Username
+        </div>
+        <div class="value">
+          {{profileData.userName}}
+        </div>
+      </div>
+      <div class="card-item">
+        <div class="title">
+          Name
+        </div>
+        <div class="value">
+          {{profileData.firstName}} {{profileData.lastName}}
+        </div>
+      </div>
+      <div class="card-item">
+        <div class="title">
+          E-mail
+        </div>
+        <div class="value">
+          {{profileData.email}}
+        </div>
+      </div>
+      <div class="card-item" style="align-items: center;" *ngIf="isAdmin">
+        <div class="footer-text">Administrator</div>
+      </div>
+    </div>
+    <div *ngIf="galleries && !gallery" class="gallery-list">
+      <div class="gallery" (click)="selectGallery(g.id || '')" *ngFor="let g of galleries">
+        <div class="image-container" [ngClass]="g.pictures?.length ? '' : 'ph'">
+          <div *ngFor="let url of g.pictures" class="image-sub-container"
+            [ngClass]="getImgClass(g.pictures?.length || 0)">
+            <img class="img-back" [src]="url.displayUrl || placeholderImage" alt="cover">
+            <img [src]="url.displayUrl || placeholderImage" alt="cover">
+          </div>
+        </div>
+        <div class="data-container">
+          <div class="card-item">
+            <div class="gallery-name">
+              {{g.name}}
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="footer-text">
+              {{g.pictures?.length}} Pictures
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="footer-text" *ngIf="(g.likeCount || 0) > 1">
+              {{g.likeCount}} people liked this gallery
+            </div>
+            <div class="footer-text" *ngIf="(g.likeCount || 0) === 1">
+              {{g.likeCount}} person liked this gallery
+            </div>
+            <div class="footer-text" *ngIf="(g.likeCount || 0) === 0">
+              Nobody liked this gallery
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="footer-text" *ngIf="g.isPrivate">
+              <i class="bx bx-lock-alt"></i> Private
+            </div>
+            <div class="footer-text" *ngIf="!g.isPrivate">
+              <i class="bx bx-lock-open-alt"></i> Public
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="footer-text" *ngIf="g.isFavorite">
+              <i class="bx bx-star"></i> Favorited
+            </div>
+          </div>
+          <div class="card-item bottom-buttons">
+            <div class="button-list">
+              <button *ngIf="!userId" mat-button matTooltip="Like gallery" (click)="likeGallery(g, $event)"
+                [disabled]="!canLike">
+                <i class='bx bx-heart' [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"></i>
+              </button>
+              <button *ngIf="userId" mat-button (click)="addOrRemoveFavorite(g, $event)"
+                [matTooltip]="g.isFavorite ? 'Set unfavorite' : 'Set favorite'">
+                <i class='bx bx-tada-hover' [ngClass]="g.isFavorite ? 'bx-star' : 'bxs-star'"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-pager [itemCount]="total" (changeEvent)="setPage($event)"></app-pager>
+    </div>
+    <app-gallery [gallery]="gallery" *ngIf="gallery"></app-gallery>
+  </div>
+</div>

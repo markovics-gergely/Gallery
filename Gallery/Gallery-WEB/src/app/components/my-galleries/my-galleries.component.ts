@@ -5,6 +5,7 @@ import { AddAlbumPicturesDTO, AlbumViewModel, PagerModel } from 'models';
 import { AlbumService } from 'src/app/services/album.service';
 import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { environment } from 'src/environments/environment';
 import { AlbumDialogComponent } from '../dialogs/album-dialog/album-dialog.component';
 
@@ -24,7 +25,8 @@ export class MyGalleriesComponent implements OnInit {
     private loadingService: LoadingService,
     private dialog: MatDialog,
     private albumService: AlbumService,
-    private confirmAlbumService: ConfirmAlbumService
+    private confirmAlbumService: ConfirmAlbumService,
+    private snackService: SnackService
   ) { }
 
   ngOnInit(): void {
@@ -41,7 +43,7 @@ export class MyGalleriesComponent implements OnInit {
         });
       }
       this.loadingService.isLoading = false;
-    })
+    });
   }
 
   /**
@@ -88,7 +90,13 @@ export class MyGalleriesComponent implements OnInit {
 
   addOrRemoveFavorite(g: AlbumViewModel | undefined, event: Event) {
     event.stopImmediatePropagation();
-    this.confirmAlbumService.addOrRemoveFavorite(g);
+    this.confirmAlbumService.addOrRemoveFavorite(g)
+      .add(() => {
+        this.loadingService.isLoading = false;
+        if (!g?.isFavorite) {
+          this.snackService.openSnackBar('Removed from favorites!', 'OK');
+        }
+      });
   }
 
   setPublicStatus(g: AlbumViewModel | undefined, event: Event) {

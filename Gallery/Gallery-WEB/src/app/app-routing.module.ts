@@ -59,6 +59,10 @@ const routes: Routes = [
     component: UserBrowseComponent
   },
   {
+    path: 'browse/user/:id/g/:gid',
+    component: UserBrowseComponent
+  },
+  {
     path: '',
     redirectTo: 'browse',
     pathMatch: 'full'
