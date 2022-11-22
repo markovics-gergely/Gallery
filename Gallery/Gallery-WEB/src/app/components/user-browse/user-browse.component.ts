@@ -46,7 +46,10 @@ export class UserBrowseComponent implements OnInit {
             this._gallery = album;
           }).add(() => this.loadingService.isLoading = false);
         } else {
-          this.userService.getUserProfile(this._userId).subscribe(profile => this._profileData = profile);
+          this.userService.getUserProfile(this._userId).subscribe(profile => {
+            this._profileData = profile;
+            this.userService.getUserIsInRole(this._userId || '', 'admin').subscribe(admin => this._profileData!.role = admin ? 'Admin' : 'Regular')
+          });
           this.albumService.getBrowsableAlbums(environment.default_page_size, environment.default_page).subscribe(albums => {
             this._galleries = albums.values;
             this._total = albums.total;
@@ -79,7 +82,26 @@ export class UserBrowseComponent implements OnInit {
    * Navigate back to browse user
    */
   backToList() {
-    this.router.navigate(['browse/user', this.userService.getActualUserId()]);
+    this.router.navigate(['browse/user', this._userId]);
+  }
+
+  /**
+   * Navigate back to browse
+   */
+  backToBrowse() {
+    this.router.navigate(['browse']);
+  }
+
+  editUserRole(role: string) {
+    this.loadingService.isLoading = true;
+    this.userService.editUserRole({ id: this._userId || '', role })
+    .subscribe(() => {
+      this.snackService.openSnackBar(`User set as ${role}`, 'OK');
+      this._profileData!.role = role;
+    })
+    .add(() => {
+      this.loadingService.isLoading = false;
+    });
   }
 
   addOrRemoveFavorite(g: AlbumViewModel | undefined, event: Event) {
@@ -114,6 +136,13 @@ export class UserBrowseComponent implements OnInit {
    */
   get isAdmin(): boolean {
     return this.tokenService.getRole() === 'Admin';
+  }
+
+  /**
+   * Getter for user administrator status
+   */
+  get isProfileAdmin(): boolean {
+    return this._profileData?.role === 'Admin';
   }
   get profileData() { return this._profileData; }
   get galleries() { return this._galleries; }

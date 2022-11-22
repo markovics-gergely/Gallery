@@ -28,10 +28,21 @@ export interface RegisterUserDTO {
     confirmedPassword: string;
 }
 
+export interface EditUserRoleDTO {
+    id: string;
+    role: string;
+}
+
+export interface UserMiniViewModel {
+    id: string;
+    userName: string;
+}
+
 export interface ProfileViewModel {
     userName: string;
     name: string;
     email: string;
+    role?: string;
 }
 
 export interface FullProfileViewModel {
@@ -39,6 +50,7 @@ export interface FullProfileViewModel {
     firstName: string;
     lastName: string;
     email: string;
+    role?: string;
 }
 
 export interface ProfileAlbumViewModel {

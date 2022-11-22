@@ -1,33 +1,37 @@
 <div class="container">
   <div class="main-container">
     <div class="title-line">
-      <div class="buttons" *ngIf="gallery">
-        <button mat-button matTooltip="Back to galleries" (click)="backToList()">
+      <div class="buttons">
+        <button mat-button matTooltip="Back to galleries" (click)="backToBrowse()">
           <i class='bx bx-arrow-to-left bx-tada-hover'></i>
         </button>
-        <button mat-button matTooltip="Back to user galleries" (click)="backToList()">
+        <button *ngIf="!gallery && isAdmin && !isProfileAdmin" mat-button matTooltip="Add to admins" (click)="editUserRole('Admin')">
+          <i class='bx bxs-user bx-tada-hover'></i>
+        </button>
+        <button *ngIf="!gallery && isAdmin && isProfileAdmin" mat-button matTooltip="Remove from admins" (click)="editUserRole('Regular')">
+          <i class='bx bx-user bx-tada-hover'></i>
+        </button>
+        <button *ngIf="gallery" mat-button matTooltip="Back to user galleries" (click)="backToList()">
           <i class='bx bx-arrow-back bx-tada-hover'></i>
         </button>
-        <button *ngIf="!userId" mat-button matTooltip="Like gallery" (click)="likeGallery(gallery, $event)"
+        <button *ngIf="gallery && !userId" mat-button matTooltip="Like gallery" (click)="likeGallery(gallery, $event)"
           [disabled]="!canLike">
           <i class='bx bx-heart' [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"></i>
         </button>
-        <button *ngIf="userId" mat-button [matTooltip]="gallery.isFavorite ? 'Set unfavorite' : 'Set favorite'"
+        <button *ngIf="gallery && userId" mat-button [matTooltip]="gallery.isFavorite ? 'Set unfavorite' : 'Set favorite'"
           (click)="addOrRemoveFavorite(gallery, $event)">
           <i class='bx bx-tada-hover' [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
         </button>
       </div>
-      <div class="title" style="margin-left: 10px;" *ngIf="gallery">Galleries of {{gallery.creator?.userName}}</div>
+      <div class="title" style="margin-left: 10px;" *ngIf="!gallery">Galleries of {{profileData?.userName}}</div>
+      <div class="title" style="margin-left: 10px;" *ngIf="gallery">{{gallery.name}}</div>
     </div>
-    <div class="card" *ngIf="profileData" style="margin: 0;">
-      <div class="card-item" style="align-items: center;">
-        <div class="main-title">Profile</div>
-      </div>
+    <div class="card" *ngIf="profileData" style="margin: 20px 0;">
       <div class="card-item">
-        <div class="title">
+        <div class="title" style="margin-top: 0;">
           Username
         </div>
-        <div class="value">
+        <div class="value" style="margin-top: 0;">
           {{profileData.userName}}
         </div>
       </div>
@@ -47,7 +51,7 @@
           {{profileData.email}}
         </div>
       </div>
-      <div class="card-item" style="align-items: center;" *ngIf="isAdmin">
+      <div class="card-item" style="align-items: center;" *ngIf="isProfileAdmin">
         <div class="footer-text">Administrator</div>
       </div>
     </div>

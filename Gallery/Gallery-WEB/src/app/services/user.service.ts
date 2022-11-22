@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { RegisterUserDTO, LoginUserDTO, ProfileViewModel, FullProfileViewModel } from 'models';
+import { RegisterUserDTO, LoginUserDTO, ProfileViewModel, FullProfileViewModel, EditUserRoleDTO, UserMiniViewModel } from 'models';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -62,6 +63,15 @@ export class UserService {
   }
 
   /**
+   * Edit role of a user
+   * @param dto user to edit 
+   * @returns
+   */
+  public editUserRole(dto: EditUserRoleDTO): Observable<any> {
+    return this.client.post<EditUserRoleDTO>(`${this.baseUrl}/role/change`, dto);
+  }
+
+  /**
    * Get identity of the user logged in
    * @returns Id of the user
    */
@@ -102,5 +112,18 @@ export class UserService {
    */
   public getUserProfile(id: string): Observable<FullProfileViewModel> {
     return this.client.get<FullProfileViewModel>(`${this.baseUrl}/simple/${id}`);
+  }
+
+  /**
+   * Get list of users with the role specified
+   * @param role role to search with
+   * @returns List of users
+   */
+  public getUsersByRole(role: string): Observable<UserMiniViewModel[]> {
+    return this.client.get<UserMiniViewModel[]>(`${this.baseUrl}/role/${role}`);
+  }
+
+  public getUserIsInRole(id: string, role: string): Observable<boolean> {
+    return this.getUsersByRole(role).pipe(map(users => users.some(u => u.id === id)));
   }
 }
