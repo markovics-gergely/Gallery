@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddAlbumPicturesDTO, AlbumViewModel, CreateAlbumDTO, EditAlbumDTO, EditFavoritesDTO, PagerList, ProfileAlbumViewModel, RemoveAlbumPicturesDTO } from 'models';
+import { AddAlbumPicturesDTO, AlbumViewModel, ConfigViewModel, CreateAlbumDTO, EditAlbumDTO, EditFavoritesDTO, PagerList, ProfileAlbumViewModel, RemoveAlbumPicturesDTO } from 'models';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserService } from './user.service';
@@ -156,6 +156,14 @@ export class AlbumService {
    */
   public removeFavorites(albumId: string): Observable<any> {
     return this.http.delete(`${this._baseUrl}/favorites/${albumId}`, {});
+  }
+
+  /**
+   * Load Config data from the server
+   * @returns Config data for albums
+   */
+  public loadConfig(): Observable<ConfigViewModel> {
+    return this.http.get<ConfigViewModel>(`${this._baseUrl}/config`);
   }
 
   /**

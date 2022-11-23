@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlbumViewModel, FullProfileViewModel, PagerModel, ProfileViewModel } from 'models';
+import { AlbumViewModel, FullProfileViewModel, PagerModel } from 'models';
 import { AlbumService } from 'src/app/services/album.service';
 import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';

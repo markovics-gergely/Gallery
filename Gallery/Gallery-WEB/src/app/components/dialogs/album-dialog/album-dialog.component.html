@@ -25,7 +25,7 @@
     formControlName="isPrivate"
     >Is Private</mat-checkbox
   >
-  <div class="card-item dialog-bottom-buttons">
+  <div class="card-item dialog-bottom-buttons" *ngIf="!uploadFull">
     <div class="button-list">
       <button
         class="list-button"

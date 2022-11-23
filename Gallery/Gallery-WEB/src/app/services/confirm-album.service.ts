@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AddAlbumPicturesDTO, AlbumViewModel } from 'models';
+import { AddAlbumPicturesDTO, AlbumViewModel, RemoveAlbumPicturesDTO } from 'models';
 import { AlbumService } from './album.service';
 import { ConfirmService } from './confirm.service';
 import { LoadingService } from './loading.service';
@@ -116,5 +116,30 @@ export class ConfirmAlbumService {
         this.snackService.openSnackBar(`${dto.pictures.length} Pictures added`, 'OK');
       })
       .add(() => this.loadingService.isLoading = false);
+  }
+
+  /**
+   * Delete the images from the gallery
+   * @param id Identity of the gallery
+   * @param dto Pictures to delete
+   */
+   deletePictures(id: string, dto: RemoveAlbumPicturesDTO) {
+    return this.confirmService.confirm(
+      "Delete picture",
+      "Are you sure you want to delete this picture?"
+    ).subscribe((res) => {
+      this.loadingService.isLoading = true;
+      if (res) {
+        this.albumService.removePictures(id, dto)
+          .subscribe(() => {
+            if (dto.PictureIds.length > 1) {
+              this.snackService.openSnackBar(`${dto.PictureIds.length} Pictures removed`, 'OK');
+            } else {
+              this.snackService.openSnackBar(`Picture removed`, 'OK');
+            }
+          })
+          .add(() => this.loadingService.isLoading = false);
+      }
+    });
   }
 }

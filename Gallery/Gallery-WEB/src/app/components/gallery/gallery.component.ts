@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { AlbumViewModel, PagerModel } from 'models';
-import { ConfirmService } from 'src/app/services/confirm.service';
+import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { PreviewService } from 'src/app/services/preview.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -16,10 +15,9 @@ export class GalleryComponent implements OnInit {
   @Input() public needsCreator: boolean = false;
 
   constructor(
-    private route: ActivatedRoute,
     private previewService: PreviewService,
     private userService: UserService,
-    private confirmService: ConfirmService,
+    private confirmAlbumService: ConfirmAlbumService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -46,16 +44,12 @@ export class GalleryComponent implements OnInit {
   /**
    * Delete the image selected from the gallery
    * @param e Selection event
-   * @param url Url of the image selected
+   * @param id Identity of the image selected
    */
-  delete(e: Event, url: string) {
+  delete(e: Event, id: string) {
     e.stopImmediatePropagation();
-    this.confirmService.confirm(
-      "Delete picture",
-      "Are you sure you want to delete this picture?"
-    ).subscribe(accepted => {
-      console.log(accepted);
-    });
+    this.confirmAlbumService.deletePictures(this.gallery?.id || '', { PictureIds: [id] })
+      .add(() => this.gallery!.pictures = this.gallery?.pictures?.filter(p => p.id !== id));
   }
 
   /** Count of images in the gallery */

@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CreateAlbumDTO } from 'models';
+import { ConfigViewModel, CreateAlbumDTO } from 'models';
+import { LoadingService } from 'src/app/services/loading.service';
+import { SnackService } from 'src/app/services/snack.service';
 
 @Component({
   selector: 'app-album-dialog',
@@ -13,8 +15,10 @@ export class AlbumDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AlbumDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateAlbumDTO,
-    private formBuilder: FormBuilder
+    @Inject(MAT_DIALOG_DATA) public data: ConfigViewModel,
+    private formBuilder: FormBuilder,
+    private loadingService: LoadingService,
+    private snackService: SnackService
   ) { }
 
   ngOnInit(): void {
@@ -40,14 +44,22 @@ export class AlbumDialogComponent implements OnInit {
 
   addPicture(event: Event) {
     const files = (event.target as HTMLInputElement)?.files;
-    if (files) {
-      Array.from(files).forEach(file => {
-        (this._form?.get('pictures') as FormArray).push(
-          new FormGroup({
-            file: new FormControl(file, Validators.required)
-          })
-        );
-      });
+    let overloaded = false;
+    Array.from(files || []).forEach(file => {
+      if (file.size <= this.data.maxUploadSize * 1024 * 1024) {
+        if (this.uploadedCount < this.data.maxUploadCount) {
+          (this._form?.get('pictures') as FormArray).push(
+            new FormGroup({
+              file: new FormControl(file, Validators.required)
+            })
+          );
+        } else { overloaded = true; }
+      } else {
+        this.snackService.openSnackBar(`${file.name} has exceeded the ${this.data.maxUploadSize} mb file limit!`, 'OK');
+      }
+    });
+    if (overloaded) {
+      this.snackService.openSnackBar(`You can only upload ${this.data.maxUploadCount} pictures at a time`, 'OK');
     }
   }
 
@@ -60,4 +72,6 @@ export class AlbumDialogComponent implements OnInit {
 
   get pictureControls() { return (this._form?.get('pictures') as FormArray).controls; }
   get form() { return this._form; }
+  get uploadedCount() { return (this._form?.get('pictures') as FormArray).controls.length; }
+  get uploadFull() { return this.uploadedCount === this.data.maxUploadCount; }
 }
