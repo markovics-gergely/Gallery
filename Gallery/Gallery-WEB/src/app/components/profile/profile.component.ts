@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   private _profileData: ProfileViewModel | undefined;
@@ -23,17 +23,22 @@ export class ProfileComponent implements OnInit {
     private loadingService: LoadingService,
     private tokenService: TokenService,
     private albumService: AlbumService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadingService.isLoading = true;
-    this.userService.getProfile().subscribe(data => {
+    this.userService.getProfile().subscribe((data) => {
       this._profileData = data;
-      this.albumService.getProfileAlbums(environment.default_page_size, environment.default_page).subscribe(albums => {
-        this._albums = albums.values;
-        this._total = albums.total;
-        this.loadingService.isLoading = false;
-      });
+      this.albumService
+        .getProfileAlbums(
+          environment.default_page_size,
+          environment.default_page
+        )
+        .subscribe((albums) => {
+          this._albums = albums.values;
+          this._total = albums.total;
+          this.loadingService.isLoading = false;
+        });
     });
   }
 
@@ -42,18 +47,18 @@ export class ProfileComponent implements OnInit {
    * @param value Pager changed event
    */
   setPage(value: PagerModel) {
-    this.albumService.getProfileAlbums(value.pageSize, value.page + 1).subscribe(albums => {
-      this._albums = albums.values;
-      this._total = albums.total;
-    });
+    this.albumService
+      .getProfileAlbums(value.pageSize, value.page + 1)
+      .subscribe((albums) => {
+        this._albums = albums.values;
+        this._total = albums.total;
+      });
   }
 
   /**
    * Open profile editor modal
    */
-  openEdit() {
-
-  }
+  openEdit() {}
 
   /**
    * Navigate to the details page of the chosen gallery
@@ -67,10 +72,18 @@ export class ProfileComponent implements OnInit {
    * Getter for user administrator status
    */
   get isAdmin(): boolean {
-    return this.tokenService.getRole() === 'Admin';
+    return this.tokenService.role === 'Admin';
   }
-  get profileData() { return this._profileData; }
-  get albums() { return this._albums; }
-  get total() { return this._total; }
-  get placeholderImage() { return 'https://via.placeholder.com/150x120.png?text=Gallery'; }
+  get profileData() {
+    return this._profileData;
+  }
+  get albums() {
+    return this._albums;
+  }
+  get total() {
+    return this._total;
+  }
+  get placeholderImage() {
+    return 'https://via.placeholder.com/150x120.png?text=Gallery';
+  }
 }

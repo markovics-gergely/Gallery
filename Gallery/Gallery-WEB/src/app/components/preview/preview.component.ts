@@ -4,16 +4,12 @@ import { PreviewService } from 'src/app/services/preview.service';
 @Component({
   selector: 'app-preview',
   templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.scss']
+  styleUrls: ['./preview.component.scss'],
 })
 export class PreviewComponent implements OnInit {
+  constructor(private previewService: PreviewService) {}
 
-  constructor(
-    private previewService: PreviewService
-  ) { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Close preview page
@@ -25,5 +21,7 @@ export class PreviewComponent implements OnInit {
   /**
    * Getter for the previewable image url
    */
-  get previewImage() { return this.previewService.previewImage; }
+  get previewImage() {
+    return this.previewService.previewImage;
+  }
 }

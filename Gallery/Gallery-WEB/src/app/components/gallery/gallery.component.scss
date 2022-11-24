@@ -3,7 +3,9 @@
 }
 
 .card-item:first-child {
-  div { margin-top: 0!important; }
+  div {
+    margin-top: 0 !important;
+  }
 }
 
 .sub-title {
@@ -63,9 +65,9 @@
       opacity: 1;
     }
     &:active {
-        transform: scale(0.98);
-        box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-        filter: brightness(80%);
+      transform: scale(0.98);
+      box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+      filter: brightness(80%);
     }
   }
 }

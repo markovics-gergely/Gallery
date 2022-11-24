@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   AddAlbumPicturesDTO,
   AlbumViewModel,
-  ConfigViewModel,
   CreateAlbumDTO,
   PagerModel,
 } from 'models';
@@ -110,6 +109,11 @@ export class MyGalleriesComponent implements OnInit {
     this.router.navigate(['mygalleries']);
   }
 
+  /**
+   * Switch favorite status of the gallery
+   * @param g Gallery to edit
+   * @param event Selection event
+   */
   addOrRemoveFavorite(g: AlbumViewModel | undefined, event: Event) {
     event.stopImmediatePropagation();
     this.confirmAlbumService.addOrRemoveFavorite(g).add(() => {
@@ -120,6 +124,11 @@ export class MyGalleriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Switch public status of the gallery
+   * @param g Gallery to edit
+   * @param event Selection event
+   */
   setPublicStatus(g: AlbumViewModel | undefined, event: Event) {
     event.stopImmediatePropagation();
     this.confirmAlbumService.setPublicStatus(g);
@@ -135,37 +144,56 @@ export class MyGalleriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Add pictures to the gallery
+   * @param event File upload event
+   */
   addPictures(event: Event) {
     this.loadingService.isLoading = true;
-    this.albumService
-      .loadConfig()
-      .subscribe((config) => {
-        const files = (event.target as HTMLInputElement)?.files;
-        const filtered = Array.from(files || []).filter(file => {
-          if (file.size > config.maxUploadSize * 1024 * 1024) {
-            this.snackService.openSnackBar(
-              `${file.name} has exceeded the ${config.maxUploadSize} mb file limit!`,
-              'OK'
-            );
-            return false;
-          }
-          return true;
-        });
-        if (filtered.length > config.maxUploadCount) {
+    this.albumService.loadConfig().subscribe((config) => {
+      const files = (event.target as HTMLInputElement)?.files;
+      const filtered = Array.from(files || []).filter((file) => {
+        if (file.size > config.maxUploadSize * 1024 * 1024) {
           this.snackService.openSnackBar(
-            `You can only upload ${config.maxUploadCount} pictures at a time`,
+            `${file.name} has exceeded the ${config.maxUploadSize} mb file limit!`,
             'OK'
           );
+          return false;
         }
-        const dto: AddAlbumPicturesDTO = { pictures: filtered.slice(0, Math.min(filtered.length, config.maxUploadCount)) };
-        this.albumService.addPictures(this._gallery?.id || '', dto)
-          .subscribe(() => {
-            this.snackService.openSnackBar(`${dto.pictures.length} Pictures added`, 'OK');
-          })
-          .add(() => (this.loadingService.isLoading = false));
+        return true;
       });
+      if (filtered.length > config.maxUploadCount) {
+        this.snackService.openSnackBar(
+          `You can only upload ${config.maxUploadCount} pictures at a time`,
+          'OK'
+        );
+      }
+      const dto: AddAlbumPicturesDTO = {
+        pictures: filtered.slice(
+          0,
+          Math.min(filtered.length, config.maxUploadCount)
+        ),
+      };
+      this.albumService
+        .addPictures(this._gallery?.id || '', dto)
+        .subscribe(() => {
+          this.snackService.openSnackBar(
+            `${dto.pictures.length} Pictures added`,
+            'OK'
+          );
+        })
+        .add(() => {
+          this.loadingService.isLoading = false;
+          this._total -= dto.pictures.length;
+        });
+    });
   }
 
+  /**
+   * Get style class for the cover
+   * @param count Count of cover
+   * @returns Class to style with
+   */
   getImgClass(count: number) {
     if (count > 4) return 'sub-9';
     if (count > 1) return 'sub-4';

@@ -1,19 +1,42 @@
 <div class="pager" *ngIf="pageCount > 1">
-    <button [ngClass]="isAtEnd(false) ? 'invisible' : ''" (click)="stepToEnd(false)"><i class='bx bx-chevrons-left'></i></button>
-    <button [ngClass]="isAtEnd(false) ? 'invisible' : ''" (click)="stepPage(false)"><i class='bx bx-chevron-left'></i></button>
-    <button *ngFor="let num of getPagerList()" 
-        [ngClass]="num == page ? 'active' : ''"
-        (click)="stepTo(num)">
-        {{num + 1}}
-    </button>
-    <button [ngClass]="isAtEnd(true) ? 'invisible' : ''" (click)="stepPage(true)"><i class='bx bx-chevron-right'></i></button>
-    <button [ngClass]="isAtEnd(true) ? 'invisible' : ''" (click)="stepToEnd(true)"><i class='bx bx-chevrons-right'></i></button>
+  <button
+    [ngClass]="isAtEnd(false) ? 'invisible' : ''"
+    (click)="stepToEnd(false)"
+  >
+    <i class="bx bx-chevrons-left"></i>
+  </button>
+  <button
+    [ngClass]="isAtEnd(false) ? 'invisible' : ''"
+    (click)="stepPage(false)"
+  >
+    <i class="bx bx-chevron-left"></i>
+  </button>
+  <button
+    *ngFor="let num of getPagerList()"
+    [ngClass]="num == page ? 'active' : ''"
+    (click)="stepTo(num)"
+  >
+    {{ num + 1 }}
+  </button>
+  <button [ngClass]="isAtEnd(true) ? 'invisible' : ''" (click)="stepPage(true)">
+    <i class="bx bx-chevron-right"></i>
+  </button>
+  <button
+    [ngClass]="isAtEnd(true) ? 'invisible' : ''"
+    (click)="stepToEnd(true)"
+  >
+    <i class="bx bx-chevrons-right"></i>
+  </button>
 </div>
 <div class="sizer" *ngIf="pageCount">
-    <select name="sizes" id="sizes" [ngModel]="pageSize" (ngModelChange)="changeSize($event)">
-        <option *ngFor="let size of pageSizes" 
-            [ngValue]="size">
-            {{size}}
-        </option>
-    </select>
+  <select
+    name="sizes"
+    id="sizes"
+    [ngModel]="pageSize"
+    (ngModelChange)="changeSize($event)"
+  >
+    <option *ngFor="let size of pageSizes" [ngValue]="size">
+      {{ size }}
+    </option>
+  </select>
 </div>

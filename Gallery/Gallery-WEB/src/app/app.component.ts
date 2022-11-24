@@ -26,5 +26,5 @@ export class AppComponent {
   /**
    * Getter for sidebar status
    */
-  get isSidebarOpen() { return this.sidebarService.isOpen; }
+  get sidebarOpen() { return this.sidebarService.isOpen; }
 }

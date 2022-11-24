@@ -7,7 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  styleUrls: ['./gallery.component.scss'],
 })
 export class GalleryComponent implements OnInit {
   private _pager: PagerModel | undefined;
@@ -19,7 +19,7 @@ export class GalleryComponent implements OnInit {
     private userService: UserService,
     private confirmAlbumService: ConfirmAlbumService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.cdr.detectChanges();
@@ -48,14 +48,24 @@ export class GalleryComponent implements OnInit {
    */
   delete(e: Event, id: string) {
     e.stopImmediatePropagation();
-    this.confirmAlbumService.deletePictures(this.gallery?.id || '', { PictureIds: [id] })
-      .add(() => this.gallery!.pictures = this.gallery?.pictures?.filter(p => p.id !== id));
+    this.confirmAlbumService
+      .deletePictures(this.gallery?.id || '', { PictureIds: [id] })
+      .add(
+        () =>
+          (this.gallery!.pictures = this.gallery?.pictures?.filter(
+            (p) => p.id !== id
+          ))
+      );
   }
 
   /** Count of images in the gallery */
-  get itemCount() { return this.gallery?.pictures?.length || 0; }
+  get itemCount() {
+    return this.gallery?.pictures?.length || 0;
+  }
   /** Flag for gallery ownership */
-  get ownGallery(): boolean { return this.gallery?.creator?.id === this.userService.getActualUserId(); }
+  get ownGallery(): boolean {
+    return this.gallery?.creator?.id === this.userService.actualUserId;
+  }
   /** Get sublist of the images by pager data */
   get pictures() {
     if (this._pager) {

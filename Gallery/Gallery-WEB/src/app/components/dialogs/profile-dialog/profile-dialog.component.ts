@@ -3,13 +3,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-profile-dialog',
   templateUrl: './profile-dialog.component.html',
-  styleUrls: ['./profile-dialog.component.scss']
+  styleUrls: ['./profile-dialog.component.scss'],
 })
 export class ProfileDialogComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

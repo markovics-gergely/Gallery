@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AddAlbumPicturesDTO, AlbumViewModel, RemoveAlbumPicturesDTO } from 'models';
+import {
+  AddAlbumPicturesDTO,
+  AlbumViewModel,
+  RemoveAlbumPicturesDTO,
+} from 'models';
 import { AlbumService } from './album.service';
 import { ConfirmService } from './confirm.service';
 import { LoadingService } from './loading.service';
@@ -16,6 +20,11 @@ export class ConfirmAlbumService {
     private snackService: SnackService
   ) {}
 
+  /**
+   * Switch favorite status of the gallery
+   * @param gallery Gallery to edit
+   * @returns Subscription to result
+   */
   addOrRemoveFavorite(gallery: AlbumViewModel | undefined) {
     if (gallery?.isFavorite) {
       return this.confirmService
@@ -46,6 +55,11 @@ export class ConfirmAlbumService {
     }
   }
 
+  /**
+   * Switch public status of the gallery
+   * @param gallery Gallery to edit
+   * @returns Subscription to result
+   */
   setPublicStatus(gallery: AlbumViewModel | undefined) {
     return this.confirmService
       .confirm(
@@ -79,6 +93,11 @@ export class ConfirmAlbumService {
       });
   }
 
+  /**
+   * Delete the selected gallery and its' pictures
+   * @param gallery Gallery to delete
+   * @returns Subscription to result
+   */
   deleteGallery(gallery: AlbumViewModel | undefined) {
     return this.confirmService
       .confirm(
@@ -98,48 +117,66 @@ export class ConfirmAlbumService {
       });
   }
 
+  /**
+   * Add a like to the selected gallery
+   * @param gallery Gallery to edit
+   * @returns Subscription to result
+   */
   likeGallery(gallery: AlbumViewModel | undefined) {
     this.loadingService.isLoading = true;
-    return this.albumService
-      .likeAlbum(gallery?.id || '')
-      .subscribe(() => {
-        gallery!.likeCount!++;
-        this.snackService.openSnackBar(`You liked ${gallery?.name}`, 'OK');
-      });
+    return this.albumService.likeAlbum(gallery?.id || '').subscribe(() => {
+      gallery!.likeCount!++;
+      this.snackService.openSnackBar(`You liked ${gallery?.name}`, 'OK');
+    });
   }
 
+  /**
+   * Add pictures to the selected gallery
+   * @param id Identity of the gallery
+   * @param dto Pictures to add to the gallery
+   */
   addPictures(id: string, dto: AddAlbumPicturesDTO) {
     this.loadingService.isLoading = true;
     return this.albumService
       .addPictures(id, dto)
       .subscribe(() => {
-        this.snackService.openSnackBar(`${dto.pictures.length} Pictures added`, 'OK');
+        this.snackService.openSnackBar(
+          `${dto.pictures.length} Pictures added`,
+          'OK'
+        );
       })
-      .add(() => this.loadingService.isLoading = false);
+      .add(() => (this.loadingService.isLoading = false));
   }
 
   /**
    * Delete the images from the gallery
    * @param id Identity of the gallery
    * @param dto Pictures to delete
+   * @returns Subscription to result
    */
-   deletePictures(id: string, dto: RemoveAlbumPicturesDTO) {
-    return this.confirmService.confirm(
-      "Delete picture",
-      "Are you sure you want to delete this picture?"
-    ).subscribe((res) => {
-      this.loadingService.isLoading = true;
-      if (res) {
-        this.albumService.removePictures(id, dto)
-          .subscribe(() => {
-            if (dto.PictureIds.length > 1) {
-              this.snackService.openSnackBar(`${dto.PictureIds.length} Pictures removed`, 'OK');
-            } else {
-              this.snackService.openSnackBar(`Picture removed`, 'OK');
-            }
-          })
-          .add(() => this.loadingService.isLoading = false);
-      }
-    });
+  deletePictures(id: string, dto: RemoveAlbumPicturesDTO) {
+    return this.confirmService
+      .confirm(
+        'Delete picture',
+        'Are you sure you want to delete this picture?'
+      )
+      .subscribe((res) => {
+        this.loadingService.isLoading = true;
+        if (res) {
+          this.albumService
+            .removePictures(id, dto)
+            .subscribe(() => {
+              if (dto.PictureIds.length > 1) {
+                this.snackService.openSnackBar(
+                  `${dto.PictureIds.length} Pictures removed`,
+                  'OK'
+                );
+              } else {
+                this.snackService.openSnackBar(`Picture removed`, 'OK');
+              }
+            })
+            .add(() => (this.loadingService.isLoading = false));
+        }
+      });
   }
 }

@@ -1,46 +1,61 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddAlbumPicturesDTO, AlbumViewModel, ConfigViewModel, CreateAlbumDTO, EditAlbumDTO, EditFavoritesDTO, PagerList, ProfileAlbumViewModel, RemoveAlbumPicturesDTO } from 'models';
+import {
+  AddAlbumPicturesDTO,
+  AlbumViewModel,
+  ConfigViewModel,
+  CreateAlbumDTO,
+  EditAlbumDTO,
+  PagerList,
+  ProfileAlbumViewModel,
+  RemoveAlbumPicturesDTO,
+} from 'models';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserService } from './user.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlbumService {
   /** Base url of album endpoint */
   private _baseUrl = `${environment.baseUrl}/album`;
 
-  constructor(
-    private http: HttpClient,
-    private userService: UserService
-  ) { }
+  constructor(private http: HttpClient, private userService: UserService) {}
 
   /**
    * Send get request for albums for the profile page
    * @returns List of album data for profile page
    */
-  public getProfileAlbums(pageSize: number, pageCount: number): Observable<PagerList<ProfileAlbumViewModel>> {
+  public getProfileAlbums(
+    pageSize: number,
+    pageCount: number
+  ): Observable<PagerList<ProfileAlbumViewModel>> {
     return this.http.get<PagerList<ProfileAlbumViewModel>>(
       `${this._baseUrl}/user`,
-      { params: new HttpParams()
-        .set('PageSize', pageSize)
-        .set('PageCount', pageCount)
+      {
+        params: new HttpParams()
+          .set('PageSize', pageSize)
+          .set('PageCount', pageCount),
       }
     );
   }
-  
+
   /**
    * Send get request for albums for the list page
    * @returns List of album data for list page
    */
-   public getAlbums(pageSize: number, pageCount: number, user: string | undefined): Observable<PagerList<AlbumViewModel>> {
+  public getAlbums(
+    pageSize: number,
+    pageCount: number,
+    user: string | undefined
+  ): Observable<PagerList<AlbumViewModel>> {
     return this.http.get<PagerList<AlbumViewModel>>(
-      `${this._baseUrl}/user/${user || this.userService.getActualUserId()}`,
-      { params: new HttpParams()
-        .set('PageSize', pageSize)
-        .set('PageCount', pageCount)
+      `${this._baseUrl}/user/${user || this.userService.actualUserId}`,
+      {
+        params: new HttpParams()
+          .set('PageSize', pageSize)
+          .set('PageCount', pageCount),
       }
     );
   }
@@ -49,36 +64,40 @@ export class AlbumService {
    * Send get request for albums for the favorite page
    * @returns List of album data for favorite page
    */
-  public getFavoriteAlbums(pageSize: number, pageCount: number): Observable<PagerList<AlbumViewModel>> {
+  public getFavoriteAlbums(
+    pageSize: number,
+    pageCount: number
+  ): Observable<PagerList<AlbumViewModel>> {
     return this.http.get<PagerList<AlbumViewModel>>(
       `${this._baseUrl}/favorites`,
       {
         params: new HttpParams()
           .set('PageSize', pageSize)
-          .set('PageCount', pageCount)
+          .set('PageCount', pageCount),
       }
     );
   }
-  
+
   /**
    * Send get request for albums for the browse page
    * @returns List of album data for browse page
    */
-   public getBrowsableAlbums(pageSize: number, pageCount: number): Observable<PagerList<AlbumViewModel>> {
-    return this.http.get<PagerList<AlbumViewModel>>(
-      this._baseUrl,
-      { params: new HttpParams()
+  public getBrowsableAlbums(
+    pageSize: number,
+    pageCount: number
+  ): Observable<PagerList<AlbumViewModel>> {
+    return this.http.get<PagerList<AlbumViewModel>>(this._baseUrl, {
+      params: new HttpParams()
         .set('PageSize', pageSize)
-        .set('PageCount', pageCount)
-      }
-    );
+        .set('PageCount', pageCount),
+    });
   }
-  
+
   /**
    * Send get request for album details
    * @returns Album with detailed informations
    */
-   public getAlbum(albumId: string): Observable<AlbumViewModel> {
+  public getAlbum(albumId: string): Observable<AlbumViewModel> {
     return this.http.get<AlbumViewModel>(`${this._baseUrl}/${albumId}`);
   }
 
@@ -94,18 +113,18 @@ export class AlbumService {
   /**
    * Send album edit request
    * @param dto Album to edit
-   * @returns
+   * @returns Request result
    */
   public editAlbum(dto: EditAlbumDTO, albumId: string): Observable<any> {
     console.log(dto);
-    
+
     return this.http.put(`${this._baseUrl}/${albumId}`, dto);
   }
 
   /**
    * Send album delete request
    * @param id Identity of album to delete
-   * @returns
+   * @returns Request result
    */
   public deleteAlbum(id: string): Observable<any> {
     return this.http.delete(`${this._baseUrl}/${id}`);
@@ -114,7 +133,7 @@ export class AlbumService {
   /**
    * Send a like album request
    * @param id Identity of album to like
-   * @returns
+   * @returns Request result
    */
   public likeAlbum(id: string): Observable<any> {
     return this.http.post(`${this._baseUrl}/${id}/like`, {});
@@ -124,26 +143,32 @@ export class AlbumService {
    * Add pictures to an album request
    * @param id Identity of album to add to
    * @param dto Pictures to add
-   * @returns
+   * @returns Request result
    */
   public addPictures(id: string, dto: AddAlbumPicturesDTO): Observable<any> {
-    return this.http.put(`${this._baseUrl}/${id}/pictures/add`, this.getFormData(dto));
+    return this.http.put(
+      `${this._baseUrl}/${id}/pictures/add`,
+      this.getFormData(dto)
+    );
   }
 
   /**
    * Remove pictures from an album request
    * @param id Identity of album to remove from
    * @param dto Pictures to remove
-   * @returns
+   * @returns Request result
    */
-  public removePictures(id: string, dto: RemoveAlbumPicturesDTO): Observable<any> {
+  public removePictures(
+    id: string,
+    dto: RemoveAlbumPicturesDTO
+  ): Observable<any> {
     return this.http.put(`${this._baseUrl}/${id}/pictures/remove`, dto);
   }
 
   /**
    * Add an album to favorites request
    * @param albumId Identity of album to add
-   * @returns
+   * @returns Request result
    */
   public addToFavorites(albumId: string): Observable<any> {
     return this.http.post(`${this._baseUrl}/favorites/${albumId}`, {});
@@ -152,7 +177,7 @@ export class AlbumService {
   /**
    * Remove an album from favorites request
    * @param albumId Identity of album to remove
-   * @returns
+   * @returns Request result
    */
   public removeFavorites(albumId: string): Observable<any> {
     return this.http.delete(`${this._baseUrl}/favorites/${albumId}`, {});
@@ -174,7 +199,7 @@ export class AlbumService {
   private getFormData(obj: any): FormData {
     return Object.keys(obj).reduce((formData, key) => {
       if (key === 'pictures') {
-        (obj[key] as File[]).forEach(file => {
+        (obj[key] as File[]).forEach((file) => {
           formData.append(key, file);
         });
       } else {

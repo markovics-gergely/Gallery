@@ -1,191 +1,204 @@
 @keyframes fadeIn {
-    from { opacity: 0; visibility: visible; }
-    to { opacity: 1; visibility: visible; }
+  from {
+    opacity: 0;
+    visibility: visible;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 :host {
-    display: block;
+  display: block;
 }
 
 .sidebar {
-    width: 220px;
-    padding: 10px 14px;
-    background: var(--secondary-color);
-    transition: all 0.3s ease;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    
-    &.close {
-        width: 86px;
-        .text { opacity: 0; }
-        .toggle { transform: translateY(-50%) rotate(0deg); }
+  width: 220px;
+  padding: 10px 14px;
+  background: var(--secondary-color);
+  transition: all 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+
+  &.close {
+    width: 86px;
+    .text {
+      opacity: 0;
     }
-
-    li {
-        height: 50px;
-        list-style: none;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        margin-top: 10px;
-        animation: expand 3s;
-
-        a {
-            min-height: 50px;
-            list-style: none;
-            height: 100%;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            border-radius: 6px;
-            text-decoration: none;
-            transition: all 1s ease;
-
-            &.active, &:hover {
-                background-color: var(--primary-color);
-
-                .icon, .text {
-                    color: var(--secondary-color);
-                }
-            }
-        }
+    .toggle {
+      transform: translateY(-50%) rotate(0deg);
     }
+  }
 
-    header {
-        position: relative;
+  li {
+    height: 50px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+    animation: expand 3s;
 
-        .image-text {
-            display: flex;
-            
-            .image {
-                min-width: 55px;
-                min-height: 55px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none;
-                background-color: var(--primary-color);
-    
-                i { 
-                    min-width: 55px;
-                    font-size: 36px;
-                    color: var(--secondary-color);
-                }
-            }
+    a {
+      min-height: 50px;
+      list-style: none;
+      height: 100%;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 1s ease;
 
-            .logo-text {
-                display: flex;
-                margin-left: 12px;
-                flex-direction: column;
-                align-items: flex-start;
+      &.active,
+      &:hover {
+        background-color: var(--primary-color);
 
-                .name {
-                    margin-top: 5px;
-                    font-size: 18px;
-                    font-weight: 600;
-                }
-                .subname {
-                    margin-left: 22px;
-                    font-size: 16px;
-                    margin-top: 2px;
-                    display: block;
-                }
-            }
+        .icon,
+        .text {
+          color: var(--secondary-color);
         }
-
-        .toggle {
-            position: absolute;
-            top: 50%;
-            right: -25px;
-            transform: translateY(-50%) rotate(180deg);
-            height: 25px;
-            width: 25px;
-            background-color: var(--primary-color);
-            color: var(--secondary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+      }
     }
+  }
 
-    .icon {
-        min-width: 60px;
+  header {
+    position: relative;
+
+    .image-text {
+      display: flex;
+
+      .image {
+        min-width: 55px;
+        min-height: 55px;
         border-radius: 6px;
-        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-    }
+        text-decoration: none;
+        background-color: var(--primary-color);
 
-    .text, .icon {
-        color: var(--text-color);
-        transition: all 0.3s ease;
-    }
+        i {
+          min-width: 55px;
+          font-size: 36px;
+          color: var(--secondary-color);
+        }
+      }
 
-    .text {
-        font-size: 17px;
-        font-weight: 500;
-        white-space: nowrap;
-        opacity: 1;
-    }
-
-    .menu {
-        margin-top: 40px;
-    }
-
-    .menu-bar {
-        height: calc(100% - 55px);
+      .logo-text {
         display: flex;
+        margin-left: 12px;
         flex-direction: column;
-        justify-content: space-between;
-        overflow-y: scroll;
+        align-items: flex-start;
 
-        -ms-overflow-style: none;
-        scrollbar-width: none; 
-        &::-webkit-scrollbar { 
-            display: none;
+        .name {
+          margin-top: 5px;
+          font-size: 18px;
+          font-weight: 600;
         }
-
-        .mode {
-            border-radius: 6px;
-            background-color: var(--secondary-color-light);
-            position: relative;
-            transition: all 0.3s ease;
-
-            .sun-moon {
-                height: 50px;
-                width: 60px;
-
-                i {
-                    position: absolute;
-
-                    &.sun {
-                        opacity: 0;
-                    }
-                }
-            }
+        .subname {
+          margin-left: 22px;
+          font-size: 16px;
+          margin-top: 2px;
+          display: block;
         }
-
-        .bottom-content .toggle-switch {
-            position: absolute;
-            right: 0;
-            height: 100%;
-            min-width: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+      }
     }
+
+    .toggle {
+      position: absolute;
+      top: 50%;
+      right: -25px;
+      transform: translateY(-50%) rotate(180deg);
+      height: 25px;
+      width: 25px;
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .icon {
+    min-width: 60px;
+    border-radius: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .text,
+  .icon {
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+
+  .text {
+    font-size: 17px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 1;
+  }
+
+  .menu {
+    margin-top: 40px;
+  }
+
+  .menu-bar {
+    height: calc(100% - 55px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: scroll;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mode {
+      border-radius: 6px;
+      background-color: var(--secondary-color-light);
+      position: relative;
+      transition: all 0.3s ease;
+
+      .sun-moon {
+        height: 50px;
+        width: 60px;
+
+        i {
+          position: absolute;
+
+          &.sun {
+            opacity: 0;
+          }
+        }
+      }
+    }
+
+    .bottom-content .toggle-switch {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      min-width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
 }

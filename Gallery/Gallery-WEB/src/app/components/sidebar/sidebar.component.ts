@@ -7,28 +7,30 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-
   constructor(
     private router: Router,
     private tokenService: TokenService,
     private sidebarService: SidebarService,
     private userService: UserService
-  ) { }
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Getter for open status
    */
-  get isOpen() { return this.sidebarService.isOpen; }
+  get isOpen() {
+    return this.sidebarService.isOpen;
+  }
   /**
    * Getter for authentication status
    */
-  get isAuthenticated() { return this.userService.isAuthenticated(); }
+  get authenticated() {
+    return this.userService.authenticated;
+  }
 
   /**
    * Switch open status

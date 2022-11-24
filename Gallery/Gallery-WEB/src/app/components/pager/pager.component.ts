@@ -1,13 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { PagerModel } from 'models';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pager',
   templateUrl: './pager.component.html',
-  styleUrls: ['./pager.component.scss']
+  styleUrls: ['./pager.component.scss'],
 })
-export class PagerComponent implements OnInit {
+export class PagerComponent implements OnInit, OnChanges {
   /** Count of item of all pages */
   @Input() itemCount: number = 0;
   /** Event for user interaction */
@@ -23,17 +31,24 @@ export class PagerComponent implements OnInit {
     this.emitChange();
   }
 
+  ngOnChanges(_: SimpleChanges): void {
+    if (this._page > this.pageCount - 1) {
+      this._page = this.pageCount - 1;
+      this.emitChange();
+    }
+  }
+
   ngOnInit(): void {
     this.emitChange();
   }
 
   /**
-   * Emit user interacted with pager 
+   * Emit user interacted with pager
    */
   private emitChange() {
     this.changeEvent.emit({
       page: this._page,
-      pageSize: this._pageSize
+      pageSize: this._pageSize,
     });
   }
 
@@ -70,7 +85,7 @@ export class PagerComponent implements OnInit {
    * @returns Flag for end
    */
   isAtEnd(upDown: boolean): boolean {
-    return upDown ? (this._page === this.pageCount - 1) : (this._page === 0);
+    return upDown ? this._page === this.pageCount - 1 : this._page === 0;
   }
 
   /**
@@ -91,14 +106,23 @@ export class PagerComponent implements OnInit {
    * @param event Size selection event
    */
   changeSize(event: Event) {
-    if (typeof event === "number") {
+    if (typeof event === 'number') {
       this._pageSize = event;
+      this._page = 0;
       this.emitChange();
     }
   }
 
-  get pageCount(): number { return Math.ceil(this.itemCount / this._pageSize); }
-  get pageSizes(): number[] { return this._pageSizes; }
-  get pageSize(): number { return this._pageSize; }
-  get page(): number { return this._page; }
+  get pageCount(): number {
+    return Math.ceil(this.itemCount / this._pageSize);
+  }
+  get pageSizes(): number[] {
+    return this._pageSizes;
+  }
+  get pageSize(): number {
+    return this._pageSize;
+  }
+  get page(): number {
+    return this._page;
+  }
 }
