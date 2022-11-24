@@ -28,7 +28,7 @@ namespace Gallery.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumViewModel>>> GetAlbums(
+        public async Task<ActionResult<EnumerableWithTotalViewModel<AlbumViewModel>>> GetAlbums(
             [FromQuery] GetAlbumsDTO dto,
             CancellationToken cancellationToken)
         {
@@ -45,7 +45,7 @@ namespace Gallery.API.Controllers
 
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumViewModel>>> GetUserAlbums(
+        public async Task<ActionResult<EnumerableWithTotalViewModel<AlbumViewModel>>> GetUserAlbums(
             [FromRoute] Guid userId,
             [FromQuery] GetAlbumsDTO dto,
             CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ namespace Gallery.API.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<EnumerableWithCountViewModel<UserProfileViewModel>>> GetOwnUserAlbums(
+        public async Task<ActionResult<EnumerableWithTotalViewModel<UserProfileViewModel>>> GetOwnUserAlbums(
             [FromQuery] GetAlbumsDTO dto,
             CancellationToken cancellationToken)
         {
@@ -65,7 +65,7 @@ namespace Gallery.API.Controllers
         }
 
         [HttpGet("favorites")]
-        public async Task<ActionResult<EnumerableWithCountViewModel<AlbumViewModel>>> GetUserFavoriteAlbums(
+        public async Task<ActionResult<EnumerableWithTotalViewModel<AlbumViewModel>>> GetUserFavoriteAlbums(
             [FromQuery] GetAlbumsDTO dto,
             CancellationToken cancellationToken)
         {

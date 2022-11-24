@@ -10,6 +10,7 @@ using Gallery.DAL.Domain;
 using Gallery.DAL.UnitOfWork.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,10 @@ using System.Threading.Tasks;
 namespace Gallery.BLL.Infrastructure
 {
     public class AlbumQueryHandler :
-        IRequestHandler<GetOwnAlbumsQuery, EnumerableWithCountViewModel<UserProfileViewModel>>,
+        IRequestHandler<GetOwnAlbumsQuery, EnumerableWithTotalViewModel<UserProfileViewModel>>,
         IRequestHandler<GetAlbumDetailsQuery, AlbumViewModel>,
-        IRequestHandler<GetAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>,
-        IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>
+        IRequestHandler<GetAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>,
+        IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -67,7 +68,7 @@ namespace Gallery.BLL.Infrastructure
             return Task.FromResult(albumViewModel);
         }
 
-        public Task<EnumerableWithCountViewModel<AlbumViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithTotalViewModel<AlbumViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Album, bool>> filter = x => !x.IsPrivate;
             if (request.UserId != null)
@@ -76,11 +77,12 @@ namespace Gallery.BLL.Infrastructure
             }
             var albumEntities = _unitOfWork.AlbumRepository.Get(
                 filter: filter,
-                orderBy: x => x.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize).OrderBy(x => x.Name), 
+                transform: x => x.AsNoTracking(),
                 includeProperties: string.Join(',', nameof(Album.Pictures), nameof(Album.Creator), nameof(Album.FavoritedBy))
                 ).ToList();
 
-            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumViewModel>>(albumEntities);
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithTotalViewModel<AlbumViewModel>>(albumEntities);
+            albumsViewModelWithCount.Values = albumsViewModelWithCount.Values.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize);
             foreach (var album in albumsViewModelWithCount.Values)
             {
                 album.Pictures = album.Pictures.Take(Math.Min(album.Pictures.Count(), _albumPictureCount));
@@ -88,17 +90,17 @@ namespace Gallery.BLL.Infrastructure
             return Task.FromResult(albumsViewModelWithCount);
         }
 
-        public Task<EnumerableWithCountViewModel<AlbumViewModel>> Handle(GetUserFavoriteAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithTotalViewModel<AlbumViewModel>> Handle(GetUserFavoriteAlbumsQuery request, CancellationToken cancellationToken)
         {
             var userId = Guid.Parse(request.User.GetUserIdFromJwt());
             var albumEntities = _unitOfWork.UserRepository.Get(
                 filter: x => x.Id == userId,
-                includeProperties: string.Join(',', nameof(ApplicationUser.FavoritedAlbums), "FavoritedAlbums.Pictures")
+                transform: x => x.AsNoTracking(),
+                includeProperties: string.Join(',', $"{nameof(ApplicationUser.FavoritedAlbums)}.{nameof(Album.Pictures)}", $"{nameof(ApplicationUser.FavoritedAlbums)}.{nameof(Album.Creator)}")
                 ).First();
 
-            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<AlbumViewModel>>(
-                albumEntities.FavoritedAlbums.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize)
-                );
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithTotalViewModel<AlbumViewModel>>(albumEntities.FavoritedAlbums);
+            albumsViewModelWithCount.Values = albumsViewModelWithCount.Values.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize);
             foreach (var album in albumsViewModelWithCount.Values)
             {
                 album.Pictures = album.Pictures.Take(Math.Min(album.Pictures.Count(), _albumPictureCount));
@@ -106,15 +108,17 @@ namespace Gallery.BLL.Infrastructure
             return Task.FromResult(albumsViewModelWithCount);
         }
 
-        public Task<EnumerableWithCountViewModel<UserProfileViewModel>> Handle(GetOwnAlbumsQuery request, CancellationToken cancellationToken)
+        public Task<EnumerableWithTotalViewModel<UserProfileViewModel>> Handle(GetOwnAlbumsQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Album, bool>> filter = x => x.Creator.Id == Guid.Parse(request.User.GetUserIdFromJwt());
             var albumEntities = _unitOfWork.AlbumRepository.Get(
                 filter: filter,
-                orderBy: x => x.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize).OrderBy(x => x.Name),
+                transform: x => x.AsNoTracking(),
                 includeProperties: string.Join(',', nameof(Album.Pictures))
                 ).ToList();
-            var albumsViewModelWithCount = _mapper.Map<EnumerableWithCountViewModel<UserProfileViewModel>>(albumEntities);
+
+            var albumsViewModelWithCount = _mapper.Map<EnumerableWithTotalViewModel<UserProfileViewModel>>(albumEntities);
+            albumsViewModelWithCount.Values = albumsViewModelWithCount.Values.Skip((request.Dto.PageCount - 1) * request.Dto.PageSize).Take(request.Dto.PageSize);
             return Task.FromResult(albumsViewModelWithCount);
         }
     }

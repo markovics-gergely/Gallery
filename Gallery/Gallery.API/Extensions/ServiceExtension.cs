@@ -35,10 +35,10 @@ namespace Gallery.API.Extensions
             services.AddTransient<IRequestHandler<GetFullProfileQuery, ProfileWithNameViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
 
-            services.AddTransient<IRequestHandler<GetOwnAlbumsQuery, EnumerableWithCountViewModel<UserProfileViewModel>>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetOwnAlbumsQuery, EnumerableWithTotalViewModel<UserProfileViewModel>>, AlbumQueryHandler>();
             services.AddTransient<IRequestHandler<GetAlbumDetailsQuery, AlbumViewModel>, AlbumQueryHandler>();
-            services.AddTransient<IRequestHandler<GetAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>, AlbumQueryHandler>();
-            services.AddTransient<IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithCountViewModel<AlbumViewModel>>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>, AlbumQueryHandler>();
 
             services.AddTransient<IRequestHandler<AddFavoriteCommand, Unit>, AlbumCommandHandler>();
             services.AddTransient<IRequestHandler<RemoveFavoriteCommand, Unit>, AlbumCommandHandler>();

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.TypeConverters
 {
-    public class EnumerableWithCountConverter<TSource, TDest> : ITypeConverter<IEnumerable<TSource>, EnumerableWithCountViewModel<TDest>>
+    public class EnumerableWithTotalConverter<TSource, TDest> : ITypeConverter<IEnumerable<TSource>, EnumerableWithTotalViewModel<TDest>>
     {
-        public EnumerableWithCountViewModel<TDest> Convert(IEnumerable<TSource> source, EnumerableWithCountViewModel<TDest> destination, ResolutionContext context)
+        public EnumerableWithTotalViewModel<TDest> Convert(IEnumerable<TSource> source, EnumerableWithTotalViewModel<TDest> destination, ResolutionContext context)
         {
             var mappedList = context.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDest>>(source);
-            return new EnumerableWithCountViewModel<TDest>
+            return new EnumerableWithTotalViewModel<TDest>
             {
                 Values = mappedList,
                 Total = source.Count()

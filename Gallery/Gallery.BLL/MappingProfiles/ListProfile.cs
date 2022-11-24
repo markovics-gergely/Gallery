@@ -13,7 +13,7 @@ namespace Gallery.BLL.MappingProfiles
     {
         public ListProfile()
         {
-            CreateMap(typeof(IEnumerable<>), typeof(EnumerableWithCountViewModel<>)).ConvertUsing(typeof(EnumerableWithCountConverter<,>));
+            CreateMap(typeof(IEnumerable<>), typeof(EnumerableWithTotalViewModel<>)).ConvertUsing(typeof(EnumerableWithTotalConverter<,>));
         }
     }
 }
