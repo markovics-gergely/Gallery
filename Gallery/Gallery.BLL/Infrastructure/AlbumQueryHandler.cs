@@ -70,10 +70,18 @@ namespace Gallery.BLL.Infrastructure
 
         public Task<EnumerableWithTotalViewModel<AlbumViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Album, bool>> filter = x => !x.IsPrivate;
+            var signedIn = request.User?.Identity?.IsAuthenticated ?? false;
+            Expression<Func<Album, bool>>? filter = null;
             if (request.UserId != null)
             {
-                filter = x => !x.IsPrivate && x.Creator.Id == request.UserId;
+                if (signedIn && Guid.Parse(request.User!.GetUserIdFromJwt()) == request.UserId)
+                {
+                    filter = x => x.Creator.Id == request.UserId;
+                }
+                else
+                {
+                    filter = x => !x.IsPrivate && x.Creator.Id == request.UserId;
+                }
             }
             var albumEntities = _unitOfWork.AlbumRepository.Get(
                 filter: filter,
