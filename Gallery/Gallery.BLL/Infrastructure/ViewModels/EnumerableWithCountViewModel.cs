@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.ViewModels
 {
-    public class EnumerableWithCountViewModel<T>
+    public class EnumerableWithTotalViewModel<T>
     {
         public IEnumerable<T> Values { get; set; } = Enumerable.Empty<T>();
 

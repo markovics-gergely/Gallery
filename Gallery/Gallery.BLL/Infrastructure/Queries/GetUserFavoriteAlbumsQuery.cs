@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Gallery.BLL.Infrastructure.Queries
 {
-    public class GetUserFavoriteAlbumsQuery : IRequest<EnumerableWithCountViewModel<AlbumViewModel>>
+    public class GetUserFavoriteAlbumsQuery : IRequest<EnumerableWithTotalViewModel<AlbumViewModel>>
     {
         public GetAlbumsDTO Dto { get; set; }
 

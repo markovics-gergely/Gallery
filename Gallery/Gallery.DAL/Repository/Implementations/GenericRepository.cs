@@ -22,11 +22,10 @@ namespace Gallery.DAL.Repository.Implementations
 
         public IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>>? filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? transform = null,
             string includeProperties = "")
         {
             IQueryable<TEntity> query = dbSet;
-
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -38,9 +37,9 @@ namespace Gallery.DAL.Repository.Implementations
                 query = query.Include(includeProperty);
             }
 
-            if (orderBy != null)
+            if (transform != null)
             {
-                return orderBy(query).ToList();
+                return transform(query).ToList();
             }
             else
             {

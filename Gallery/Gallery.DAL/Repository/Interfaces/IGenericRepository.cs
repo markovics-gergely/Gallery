@@ -12,7 +12,7 @@ namespace Gallery.DAL.Repository.Interfaces
     {
         IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>>? filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? transform = null,
             string includeProperties = "");
 
         TEntity GetByID(object id);
