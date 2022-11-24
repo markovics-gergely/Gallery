@@ -71,7 +71,7 @@ namespace Gallery.BLL.Infrastructure
         public Task<EnumerableWithTotalViewModel<AlbumViewModel>> Handle(GetAlbumsQuery request, CancellationToken cancellationToken)
         {
             var signedIn = request.User?.Identity?.IsAuthenticated ?? false;
-            Expression<Func<Album, bool>>? filter = null;
+            Expression<Func<Album, bool>> filter = x => !x.IsPrivate;
             if (request.UserId != null)
             {
                 if (signedIn && Guid.Parse(request.User!.GetUserIdFromJwt()) == request.UserId)
