@@ -1,0 +1,86 @@
+<div class="card-item">
+  <span class="main-title">Create gallery</span>
+  <button mat-button (click)="exit()"><i class="bx bx-x"></i></button>
+</div>
+<form
+  method="post"
+  class="form-table"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  *ngIf="form"
+>
+  <label for="name">Name</label>
+  <input
+    id="name"
+    type="text"
+    placeholder="Name"
+    formControlName="name"
+    required
+    minlength="4"
+  />
+  <mat-checkbox
+    id="isPrivate"
+    class="isPrivate"
+    class="checkbox"
+    formControlName="isPrivate"
+    >Is Private</mat-checkbox
+  >
+  <div class="card-item dialog-bottom-buttons" *ngIf="!uploadFull">
+    <div class="button-list">
+      <button
+        class="list-button"
+        mat-button
+        type="button"
+        (click)="upload.click()"
+      >
+        <i class="bx bx-upload"></i>
+        <input
+          #upload
+          type="file"
+          multiple
+          class="dialog-input"
+          tabindex="1"
+          (change)="addPicture($event)"
+          accept="image/png, image/jpg, image/jpeg"
+          style="display: none"
+        />
+      </button>
+    </div>
+  </div>
+  <div class="file-list" *ngIf="pictureControls?.length">
+    <div
+      formArrayName="pictures"
+      *ngFor="let picture of pictureControls; let i = index"
+    >
+      <div class="card-item dialog-bottom-buttons">
+        <div class="button-list">
+          <button
+            class="list-button"
+            mat-button
+            type="button"
+            (click)="removePicture(i)"
+          >
+            <i class="bx bx-x"></i>
+          </button>
+          <div class="name">
+            {{ getFilename(i) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-item dialog-bottom-buttons">
+    <div class="button-list">
+      <button class="list-button" mat-button (click)="exit()">Cancel</button>
+      <button
+        type="submit"
+        class="list-button"
+        mat-button
+        (click)="onSubmit()"
+        autofocus
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</form>

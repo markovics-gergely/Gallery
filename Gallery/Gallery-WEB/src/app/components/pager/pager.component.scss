@@ -1,0 +1,41 @@
+.invisible {
+  visibility: hidden;
+}
+
+.pager {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  button {
+    background-color: transparent;
+    color: var(--primary-color);
+    margin: 2px;
+    padding: 5px;
+    border: none;
+    font-size: 24px;
+    font-weight: 400;
+    min-width: 40px;
+
+    &.active {
+      color: var(--secondary-color);
+      background-color: var(--primary-color);
+      border-radius: 10px;
+    }
+  }
+}
+
+.sizer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+
+  select {
+    width: auto;
+  }
+}

@@ -4,5 +4,7 @@ export const environment = {
   grant_type: "password",
   client_id: "galleryidentity",
   client_secret: "ded22417709fa17aa4db549408d863e6ec6d44c25719fd5e64543b6eca843632",
-  scope: "galleryidentity"
+  scope: "galleryidentity",
+  default_page_size: 10,
+  default_page: 1
 };

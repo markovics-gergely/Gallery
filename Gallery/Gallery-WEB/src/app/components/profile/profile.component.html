@@ -1,1 +1,56 @@
-<p>profile works!</p>
+<div class="container">
+  <div class="main-container">
+    <div class="card" *ngIf="profileData">
+      <div class="card-item" style="align-items: center">
+        <div class="main-title">Profile</div>
+        <button mat-button (click)="openEdit()">
+          <i class="bx bx-cog bx-spin-hover"></i>
+        </button>
+      </div>
+      <div class="card-item">
+        <div class="title">Username</div>
+        <div class="value">
+          {{ profileData.userName }}
+        </div>
+      </div>
+      <div class="card-item">
+        <div class="title">Name</div>
+        <div class="value">
+          {{ profileData.name }}
+        </div>
+      </div>
+      <div class="card-item">
+        <div class="title">E-mail</div>
+        <div class="value">
+          {{ profileData.email }}
+        </div>
+      </div>
+      <div class="card-item" style="align-items: center" *ngIf="isAdmin">
+        <div class="footer-text">Administrator</div>
+      </div>
+    </div>
+    <div class="sub-title">Galleries</div>
+    <div *ngIf="albums" class="album-container">
+      <div
+        class="album"
+        *ngFor="let album of albums"
+        (click)="navigateToGallery(album.id)"
+      >
+        <div
+          class="image-container"
+          [matBadge]="album.countOfPictures"
+          matBadgeOverlap="false"
+        >
+          <img
+            class="img-back"
+            [src]="album.coverUrl || placeholderImage"
+            alt="cover"
+          />
+          <img [src]="album.coverUrl || placeholderImage" alt="cover" />
+        </div>
+        <div class="album-name">{{ album.name }}</div>
+      </div>
+    </div>
+    <app-pager [itemCount]="total" (changeEvent)="setPage($event)"></app-pager>
+  </div>
+</div>

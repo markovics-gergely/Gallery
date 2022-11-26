@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { MyGalleriesComponent } from './components/my-galleries/my-galleries.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { RegisterComponent } from './components/register/register.component';
+import { UserBrowseComponent } from './components/user-browse/user-browse.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginGuard } from './guards/login.guard';
 
@@ -31,14 +32,40 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'mygalleries/:id',
+    component: MyGalleriesComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'favorites',
     component: FavoritesComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'browse',
-    component: BrowseComponent,
+    path: 'favorites/:id',
+    component: FavoritesComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'browse',
+    component: BrowseComponent
+  },
+  {
+    path: 'browse/:id',
+    component: BrowseComponent
+  },
+  {
+    path: 'browse/user/:id',
+    component: UserBrowseComponent
+  },
+  {
+    path: 'browse/user/:id/g/:gid',
+    component: UserBrowseComponent
+  },
+  {
+    path: '',
+    redirectTo: 'browse',
+    pathMatch: 'full'
   },
   {
     path: '**',

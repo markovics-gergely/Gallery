@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { UserService } from './services/user.service';
+import { Router } from '@angular/router';
+import { SidebarService } from './services/sidebar.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ export class AppComponent {
   title = 'Gallery Viewer';
 
   constructor(
-    private userService: UserService
+    private sidebarService: SidebarService,
+    private router: Router
   ) {}
 
   /**
@@ -18,6 +20,11 @@ export class AppComponent {
    * @returns Flag of authentication
    */
   showSidebar(): boolean {
-    return this.userService.isAuthenticated();
+    return !['/login', '/register'].includes(this.router.url);
   }
+
+  /**
+   * Getter for sidebar status
+   */
+  get sidebarOpen() { return this.sidebarService.isOpen; }
 }

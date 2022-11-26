@@ -1,0 +1,19 @@
+<div class="card-item">
+  <span class="main-title">{{ data.title }}</span>
+  <button mat-button (click)="decline()"><i class="bx bx-x"></i></button>
+</div>
+<div class="card-item">
+  <div class="footer-text">
+    {{ data.message }}
+  </div>
+</div>
+<div class="card-item dialog-bottom-buttons">
+  <div class="button-list">
+    <button class="list-button cancel" mat-button (click)="decline()">
+      <i class="bx bx-x"></i>
+    </button>
+    <button class="list-button ok" mat-button (click)="accept()" autofocus>
+      <i class="bx bx-check"></i>
+    </button>
+  </div>
+</div>

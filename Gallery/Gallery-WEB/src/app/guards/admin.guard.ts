@@ -4,7 +4,7 @@ import { TokenService } from '../services/token.service';
 import { UserService } from '../services/user.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
   constructor(
@@ -18,19 +18,18 @@ export class AdminGuard implements CanActivate {
    * @returns Flag of authentication
    */
   canActivate(): boolean | Promise<boolean> {
-    let isAuthenticated = this.userService.isAuthenticated();
-    if (!isAuthenticated || !this.isInRole()) {
+    let authenticated = this.userService.authenticated;
+    if (!authenticated || !this.inRole) {
       this.router.navigate(['/login']);
     }
-    return isAuthenticated;
+    return authenticated;
   }
 
   /**
    * Get if role property in the stored token equals admin role
    * @returns Flag for admin role
    */
-  private isInRole(): boolean {
-    let role: string = this.token.getRole();
-    return role === "Admin";
+  private get inRole(): boolean {
+    return this.token.role === 'Admin';
   }
 }
