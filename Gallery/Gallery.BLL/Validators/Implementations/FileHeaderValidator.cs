@@ -51,6 +51,7 @@ namespace Gallery.BLL.Validators.Implementations
             }
             using var memoryStream = new MemoryStream();
             formFile.CopyTo(memoryStream);
+            memoryStream.Position = 0;
             if (ext == ".svg")
             {
                 using var reader = new StreamReader(memoryStream);
@@ -66,7 +67,6 @@ namespace Gallery.BLL.Validators.Implementations
                 }
             }
 
-            memoryStream.Position = 0;
             var signatures = _fileSignature[ext];
             using var binaryReader = new BinaryReader(memoryStream);
             var headerBytes = binaryReader.ReadBytes(signatures.Max(m => m.Length));
