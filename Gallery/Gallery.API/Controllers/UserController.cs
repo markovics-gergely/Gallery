@@ -1,4 +1,4 @@
-﻿using Gallery.API.Types;
+﻿using Gallery.DAL.Types;
 using Gallery.BLL.Infrastructure.Commands;
 using Gallery.BLL.Infrastructure.DataTransferObjects;
 using Gallery.BLL.Infrastructure.ViewModels;
@@ -6,6 +6,8 @@ using Gallery.BLL.Infrastructure.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using Gallery.DAL.Domain;
 
 namespace Gallery.API.Controllers
 {

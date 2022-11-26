@@ -5,6 +5,10 @@ using Gallery.BLL.Infrastructure;
 using Gallery.BLL.Infrastructure.Queries;
 using Gallery.BLL.Infrastructure.ViewModels;
 using MediatR;
+using Gallery.DAL.Repository.Implementations;
+using Gallery.DAL.Repository.Interfaces;
+using Gallery.DAL.UnitOfWork.Interfaces;
+using Gallery.DAL.UnitOfWork.Implementations;
 
 namespace Gallery.API.Extensions
 {
@@ -30,6 +34,24 @@ namespace Gallery.API.Extensions
             services.AddTransient<IRequestHandler<GetProfileQuery, ProfileViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetFullProfileQuery, ProfileWithNameViewModel>, UserQueryHandler>();
             services.AddTransient<IRequestHandler<GetUsersByRoleQuery, IEnumerable<UserNameViewModel>>, UserQueryHandler>();
+
+            services.AddTransient<IRequestHandler<GetOwnAlbumsQuery, EnumerableWithTotalViewModel<UserProfileViewModel>>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAlbumDetailsQuery, AlbumViewModel>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>, AlbumQueryHandler>();
+            services.AddTransient<IRequestHandler<GetUserFavoriteAlbumsQuery, EnumerableWithTotalViewModel<AlbumViewModel>>, AlbumQueryHandler>();
+
+            services.AddTransient<IRequestHandler<AddFavoriteCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<RemoveFavoriteCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<AddPicturesToAlbumCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateAlbumCommand, Guid>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteAlbumCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<RemovePicturesFromAlbumCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<LikeAlbumCommand, Unit>, AlbumCommandHandler>();
+            services.AddTransient<IRequestHandler<EditAlbumDataCommand, Unit>, AlbumCommandHandler>();
+
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IFileRepository, FileRepository>();
         }
     }
 }

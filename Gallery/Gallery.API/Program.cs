@@ -1,10 +1,13 @@
 using Gallery.API.Extensions;
 using Gallery.DAL;
+using Gallery.DAL.Configurations;
+using Gallery.DAL.Configurations.Interfaces;
 using Gallery.DAL.Domain;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -25,6 +28,7 @@ builder.Services.AddIdentityExtensions(configuration);
 builder.Services.AddAuthenticationExtensions(configuration);
 
 builder.Services.AddServiceExtensions();
+builder.Services.AddConfigurations(configuration);
 builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
@@ -63,9 +67,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var configService = app.Services.GetRequiredService<IGalleryConfigurationService>(); 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(configService.GetStaticFilePhysicalPath()),
+    RequestPath = $"/{configService.GetStaticFileRequestPath()}"
+});
+
 app.UseRouting();
 app.UseCors("CorsPolicy");
-app.Use(async (context, next) => await AuthenticationExtension.AuthQueryStringToHeader(context, next));
 app.UseIdentityServer();
 app.UseAuthorization();
 

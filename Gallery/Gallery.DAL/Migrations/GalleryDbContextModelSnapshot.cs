@@ -22,6 +22,47 @@ namespace Gallery.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("FavoriteAlbums", b =>
+                {
+                    b.Property<Guid>("FavoritedAlbumsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FavoritedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("FavoritedAlbumsId", "FavoritedById");
+
+                    b.HasIndex("FavoritedById");
+
+                    b.ToTable("FavoriteAlbums");
+                });
+
+            modelBuilder.Entity("Gallery.DAL.Domain.Album", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Albums");
+                });
+
             modelBuilder.Entity("Gallery.DAL.Domain.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -128,6 +169,37 @@ namespace Gallery.DAL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Gallery.DAL.Domain.Picture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AlbumId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DisplayPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhysicalPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.ToTable("Pictures");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -231,6 +303,43 @@ namespace Gallery.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FavoriteAlbums", b =>
+                {
+                    b.HasOne("Gallery.DAL.Domain.Album", null)
+                        .WithMany()
+                        .HasForeignKey("FavoritedAlbumsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gallery.DAL.Domain.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("FavoritedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Gallery.DAL.Domain.Album", b =>
+                {
+                    b.HasOne("Gallery.DAL.Domain.ApplicationUser", "Creator")
+                        .WithMany("CreatedAlbums")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Gallery.DAL.Domain.Picture", b =>
+                {
+                    b.HasOne("Gallery.DAL.Domain.Album", "Album")
+                        .WithMany("Pictures")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Gallery.DAL.Domain.ApplicationRole", null)
@@ -282,9 +391,16 @@ namespace Gallery.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Gallery.DAL.Domain.Album", b =>
+                {
+                    b.Navigation("Pictures");
+                });
+
             modelBuilder.Entity("Gallery.DAL.Domain.ApplicationUser", b =>
                 {
                     b.Navigation("Claims");
+
+                    b.Navigation("CreatedAlbums");
 
                     b.Navigation("Logins");
 
