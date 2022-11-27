@@ -114,5 +114,8 @@
       }
     }
   },
-  "defaultProject": "Gallery-WEB"
+  "defaultProject": "Gallery-WEB",
+  "cli": {
+    "analytics": false
+  }
 }

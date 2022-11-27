@@ -2,59 +2,32 @@
   <div class="main-container">
     <div class="title-line">
       <div class="buttons">
-        <button
-          mat-button
-          matTooltip="Back to galleries"
-          (click)="backToBrowse()"
-        >
+        <button mat-button matTooltip="Back to galleries" (click)="backToBrowse()">
           <i class="bx bx-arrow-to-left bx-tada-hover"></i>
         </button>
-        <button
-          *ngIf="!gallery && isAdmin && !isProfileAdmin"
-          mat-button
-          matTooltip="Add to admins"
-          (click)="editUserRole('Admin')"
-        >
+        <button *ngIf="!gallery && isAdmin && !isProfileAdmin" mat-button matTooltip="Add to admins"
+          (click)="editUserRole('Admin')">
           <i class="bx bxs-user bx-tada-hover"></i>
         </button>
-        <button
-          *ngIf="!gallery && isAdmin && isProfileAdmin"
-          mat-button
-          matTooltip="Remove from admins"
-          (click)="editUserRole('Regular')"
-        >
+        <button *ngIf="!gallery && isAdmin && isProfileAdmin" mat-button matTooltip="Remove from admins"
+          (click)="editUserRole('Regular')">
           <i class="bx bx-user bx-tada-hover"></i>
         </button>
-        <button
-          *ngIf="gallery"
-          mat-button
-          matTooltip="Back to user galleries"
-          (click)="backToList()"
-        >
+        <button *ngIf="gallery" mat-button matTooltip="Back to user galleries" (click)="backToList()">
           <i class="bx bx-arrow-back bx-tada-hover"></i>
         </button>
-        <button
-          *ngIf="gallery && !userId"
-          mat-button
-          matTooltip="Like gallery"
-          (click)="likeGallery(gallery, $event)"
-          [disabled]="!canLike"
-        >
-          <i
-            class="bx bx-heart"
-            [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"
-          ></i>
+        <button *ngIf="gallery && !userId" mat-button matTooltip="Like gallery" (click)="likeGallery(gallery, $event)"
+          [disabled]="!canLike">
+          <i class="bx bx-heart" [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"></i>
         </button>
-        <button
-          *ngIf="gallery && userId"
-          mat-button
+        <button *ngIf="gallery && userId" mat-button
           [matTooltip]="gallery.isFavorite ? 'Set unfavorite' : 'Set favorite'"
-          (click)="addOrRemoveFavorite(gallery, $event)"
-        >
-          <i
-            class="bx bx-tada-hover"
-            [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"
-          ></i>
+          (click)="addOrRemoveFavorite(gallery, $event)">
+          <i class="bx bx-tada-hover" [ngClass]="gallery.isFavorite ? 'bx-star' : 'bxs-star'"></i>
+        </button>
+        <button *ngIf="gallery && userId && isAdmin" mat-button matTooltip="Delete gallery"
+          (click)="deleteGallery(gallery, $event)">
+          <i class="bx bx-trash bx-tada-hover"></i>
         </button>
       </div>
       <div class="title" style="margin-left: 10px" *ngIf="!gallery">
@@ -88,22 +61,11 @@
       </div>
     </div>
     <div *ngIf="galleries && !gallery" class="gallery-list">
-      <div
-        class="gallery"
-        (click)="selectGallery(g.id || '')"
-        *ngFor="let g of galleries"
-      >
+      <div class="gallery" (click)="selectGallery(g.id || '')" *ngFor="let g of galleries">
         <div class="image-container" [ngClass]="g.pictures?.length ? '' : 'ph'">
-          <div
-            *ngFor="let url of g.pictures"
-            class="image-sub-container"
-            [ngClass]="getImgClass(g.pictures?.length || 0)"
-          >
-            <img
-              class="img-back"
-              [src]="url.displayUrl || placeholderImage"
-              alt="cover"
-            />
+          <div *ngFor="let url of g.pictures" class="image-sub-container"
+            [ngClass]="getImgClass(g.pictures?.length || 0)">
+            <img class="img-back" [src]="url.displayUrl || placeholderImage" alt="cover" />
             <img [src]="url.displayUrl || placeholderImage" alt="cover" />
           </div>
         </div>
@@ -142,37 +104,19 @@
           </div>
           <div class="card-item bottom-buttons">
             <div class="button-list">
-              <button
-                *ngIf="!userId"
-                mat-button
-                matTooltip="Like gallery"
-                (click)="likeGallery(g, $event)"
-                [disabled]="!canLike"
-              >
-                <i
-                  class="bx bx-heart"
-                  [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"
-                ></i>
+              <button *ngIf="!userId" mat-button matTooltip="Like gallery" (click)="likeGallery(g, $event)"
+                [disabled]="!canLike">
+                <i class="bx bx-heart" [ngClass]="canLike ? 'bx-tada-hover' : 'bx-spin'"></i>
               </button>
-              <button
-                *ngIf="userId"
-                mat-button
-                (click)="addOrRemoveFavorite(g, $event)"
-                [matTooltip]="g.isFavorite ? 'Set unfavorite' : 'Set favorite'"
-              >
-                <i
-                  class="bx bx-tada-hover"
-                  [ngClass]="g.isFavorite ? 'bx-star' : 'bxs-star'"
-                ></i>
+              <button *ngIf="userId" mat-button (click)="addOrRemoveFavorite(g, $event)"
+                [matTooltip]="g.isFavorite ? 'Set unfavorite' : 'Set favorite'">
+                <i class="bx bx-tada-hover" [ngClass]="g.isFavorite ? 'bx-star' : 'bxs-star'"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <app-pager
-        [itemCount]="total"
-        (changeEvent)="setPage($event)"
-      ></app-pager>
+      <app-pager [itemCount]="total" (changeEvent)="setPage($event)"></app-pager>
     </div>
     <app-gallery [gallery]="gallery" *ngIf="gallery"></app-gallery>
   </div>

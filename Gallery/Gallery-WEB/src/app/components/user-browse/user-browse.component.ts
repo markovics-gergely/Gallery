@@ -31,14 +31,14 @@ export class UserBrowseComponent implements OnInit {
     private userService: UserService,
     private tokenService: TokenService,
     private snackService: SnackService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this._userId = params['id'];
       if (this._userId) {
         console.log(this.userService.actualUserId);
-        
+
         if (this._userId === this.userService.actualUserId) {
           this.router.navigate(['mygallery']);
         }
@@ -125,6 +125,21 @@ export class UserBrowseComponent implements OnInit {
       .add(() => {
         this.loadingService.isLoading = false;
       });
+  }
+
+  /**
+   * Delete gallery and its' pictures
+   * @param g Gallery to edit
+   * @param event Selection event
+   */
+  deleteGallery(g: AlbumViewModel | undefined, event: Event) {
+    event.stopImmediatePropagation();
+    this.confirmAlbumService.deleteGallery(g).add(() => {
+      this._galleries = this._galleries?.filter(
+        (gallery) => gallery.id !== g?.id
+      );
+      this.backToList();
+    });
   }
 
   /**

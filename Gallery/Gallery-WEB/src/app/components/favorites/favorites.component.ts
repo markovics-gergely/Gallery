@@ -6,6 +6,7 @@ import { AlbumService } from 'src/app/services/album.service';
 import { ConfirmAlbumService } from 'src/app/services/confirm-album.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SnackService } from 'src/app/services/snack.service';
+import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -27,8 +28,9 @@ export class FavoritesComponent implements OnInit {
     private albumService: AlbumService,
     private confirmAlbumService: ConfirmAlbumService,
     private userService: UserService,
-    private snackService: SnackService
-  ) {}
+    private snackService: SnackService,
+    private tokenService: TokenService
+  ) { }
 
   ngOnInit(): void {
     this.loadingService.isLoading = true;
@@ -137,6 +139,13 @@ export class FavoritesComponent implements OnInit {
 
   isOwnGallery(g: AlbumViewModel) {
     return g.creator?.id === this.userId;
+  }
+
+  /**
+   * Getter for user administrator status
+   */
+  get isAdmin(): boolean {
+    return this.tokenService.role === 'Admin';
   }
 
   get galleries() {
